@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PokéBeats</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════ THEME VARS ═══════════════ */
+:root{
+  --bg:#0d1117;--bg-mid:#161b22;--bg-card:#0f2847;--bg-card2:#1a1a2e;
+  --green:#1DB954;--green2:#1ed760;--yellow:#FFD700;
+  --text:#e6edf3;--text2:#8b949e;--text3:#484f58;
+  --border:rgba(255,255,255,.08);--radius:16px;
+  --shadow-green:rgba(29,185,84,.25);
+}
+[data-theme="light"]{
+  --bg:#f0f4f8;--bg-mid:#ffffff;--bg-card:#dbeafe;--bg-card2:#e0e7ff;
+  --text:#1a202c;--text2:#4a5568;--text3:#a0aec0;
+  --border:rgba(0,0,0,.1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s}
+body::before{content:'';position:fixed;top:-200px;left:-200px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(29,185,84,.07) 0%,transparent 70%);pointer-events:none;z-index:0}
+body::after{content:'';position:fixed;bottom:-200px;right:-200px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(255,215,0,.04) 0%,transparent 70%);pointer-events:none;z-index:0}
+
+/* ── TOP BAR ── */
+.topbar{position:fixed;top:0;right:0;z-index:100;display:flex;gap:8px;padding:12px 16px;align-items:center}
+.topbar-btn{background:var(--bg-mid);border:1px solid var(--border);border-radius:50px;cursor:pointer;font-size:14px;padding:6px 12px;color:var(--text2);font-family:'Nunito',sans-serif;font-weight:700;transition:all .2s;white-space:nowrap}
+.topbar-btn:hover{border-color:var(--green);color:var(--green)}
+.lang-btn{font-size:16px;padding:6px 10px}
+
+/* ── SCREENS ── */
+.screen{display:none;min-height:100vh;position:relative;z-index:1}
+.screen.active{display:flex}
+
+/* ═══ LANDING ═══ */
+#landing{flex-direction:column;align-items:center;justify-content:center;padding:60px 24px 40px;text-align:center}
+.pokeball-wrap{width:100px;height:100px;margin-bottom:28px;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.pokeball-svg{width:100%;height:100%;filter:drop-shadow(0 0 20px rgba(29,185,84,.4))}
+.title{font-size:clamp(36px,8vw,52px);font-weight:900;letter-spacing:-1px;margin-bottom:12px}
+.title span{color:var(--green);text-shadow:0 0 30px rgba(29,185,84,.5)}
+.tagline{font-size:16px;color:var(--text2);max-width:340px;line-height:1.6}
+.divider{width:50px;height:3px;background:var(--green);border-radius:2px;margin:24px auto;opacity:.6}
+.desc{font-size:14px;color:var(--text3);max-width:320px;line-height:1.7;margin-bottom:36px}
+.btn-spotify{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(90deg,var(--green),var(--green2));color:#fff;font-family:'Nunito',sans-serif;font-size:17px;font-weight:700;border:none;border-radius:50px;cursor:pointer;padding:16px 32px;transition:transform .15s;box-shadow:0 0 30px var(--shadow-green)}
+.btn-spotify:hover{transform:scale(1.04)}
+.btn-spotify svg{width:22px;height:22px;fill:#fff}
+.attribution{margin-top:48px;font-size:11px;color:var(--text3);opacity:.7}
+
+/* ═══ LOADING ═══ */
+#loading{flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center;gap:20px}
+.spin-ball{width:80px;height:80px;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#loading-msg{font-size:18px;font-weight:700}
+#loading-sub{font-size:14px;color:var(--text2)}
+
+/* ═══ MEDAL SCREEN ═══ */
+#medal-screen{flex-direction:column;align-items:center;justify-content:center;padding:60px 24px 40px;text-align:center}
+.medal-intro{font-size:15px;color:var(--text2);margin-bottom:28px;max-width:280px;line-height:1.6}
+.card-scene{perspective:1000px;width:200px;height:280px;margin:0 auto 20px;cursor:pointer;user-select:none}
+.card-body{width:100%;height:100%;position:relative;transform-style:preserve-3d}
+.card-body.spinning{animation:cardSpin 1.6s linear infinite}
+@keyframes cardSpin{from{transform:rotateY(0)}to{transform:rotateY(360deg)}}
+.card-side{position:absolute;width:100%;height:100%;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:20px}
+.card-back{background:linear-gradient(135deg,#1a0a2e,#0f2847,#0a1a2e);border:2px solid rgba(255,215,0,.4);box-shadow:0 0 40px rgba(255,215,0,.15),inset 0 0 30px rgba(138,43,226,.1);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+.card-back::before{content:'';position:absolute;inset:0;border-radius:18px;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.09) 50%,transparent 60%);background-size:200% 200%;animation:shimmer 1.5s linear infinite}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.mystery-symbol{font-size:20px;color:rgba(255,215,0,.7);letter-spacing:2px;text-transform:uppercase;font-weight:800;margin-top:8px}
+.pokeball-on-card{width:90px;height:90px;filter:drop-shadow(0 0 16px rgba(255,215,0,.5));animation:symbolPulse 1.8s ease-in-out infinite}
+@keyframes symbolPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+.card-front{background:linear-gradient(135deg,#1a0533,#0f2847,#001a33);border:2px solid rgba(255,215,0,.5);box-shadow:0 0 50px rgba(255,215,0,.3);transform:rotateY(180deg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px;gap:8px}
+.medal-emoji-big{font-size:72px;filter:drop-shadow(0 0 24px rgba(255,215,0,.8))}
+.medal-name-big{font-size:16px;font-weight:900;background:linear-gradient(135deg,var(--yellow),#fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-align:center}
+.medal-desc-text{font-size:10px;color:var(--text2);line-height:1.5;text-align:center}
+.tap-hint{font-size:13px;color:var(--text3);animation:blink 1.5s ease-in-out infinite;margin-bottom:16px}
+@keyframes blink{0%,100%{opacity:.3}50%{opacity:1}}
+.btn-gold{display:none;align-items:center;gap:8px;background:linear-gradient(90deg,var(--yellow),#ffaa00);color:#000;font-family:'Nunito',sans-serif;font-size:15px;font-weight:900;border:none;border-radius:50px;cursor:pointer;padding:13px 28px;box-shadow:0 0 30px rgba(255,215,0,.4);animation:goldPulse 2s ease-in-out infinite}
+.btn-gold.show{display:inline-flex}
+@keyframes goldPulse{0%,100%{box-shadow:0 0 20px rgba(255,215,0,.4)}50%{box-shadow:0 0 50px rgba(255,215,0,.9)}}
+
+/* ═══ SPARKLES ═══ */
+.sparkles-overlay{position:fixed;inset:0;pointer-events:none;z-index:9999;display:none}
+.sparkles-overlay.on{display:block}
+.sparkle{position:absolute;border-radius:50%;animation:sparkleFly 1.2s ease-out forwards}
+@keyframes sparkleFly{0%{transform:scale(0) translate(0,0);opacity:1}100%{transform:scale(1) translate(var(--tx),var(--ty));opacity:0}}
+
+/* ═══ RESULTS ═══ */
+#results{flex-direction:column;align-items:center;padding:64px 14px 48px}
+.results-inner{width:100%;max-width:500px}
+.res-header{text-align:center;margin-bottom:18px}
+.zap-icon{font-size:24px;margin-bottom:6px}
+.res-title{font-size:16px;font-weight:800;line-height:1.5;margin-bottom:8px;background:linear-gradient(135deg,var(--text) 40%,var(--yellow));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.res-username{color:var(--green);font-size:14px;font-weight:700;margin-bottom:8px}
+.medal-mini-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.3);border-radius:50px;padding:5px 12px;margin-bottom:12px;font-size:12px;font-weight:800;color:var(--yellow)}
+.badges{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-bottom:6px}
+.badge{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;border:1px solid}
+
+/* ── FLIP CARDS ── */
+.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+@media(max-width:380px){.team-grid{grid-template-columns:repeat(2,1fr)}}
+.flip-wrap{perspective:800px;cursor:pointer;animation:popIn .5s ease backwards}
+.flip-wrap:nth-child(1){animation-delay:0s}.flip-wrap:nth-child(2){animation-delay:.1s}.flip-wrap:nth-child(3){animation-delay:.2s}
+.flip-wrap:nth-child(4){animation-delay:.3s}.flip-wrap:nth-child(5){animation-delay:.4s}.flip-wrap:nth-child(6){animation-delay:.5s}
+@keyframes popIn{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
+.flip-inner{width:100%;aspect-ratio:.68;position:relative;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.4,0,.2,1)}
+.flip-inner.flipped{transform:rotateY(180deg)}
+.flip-inner.flipped .flip-f{visibility:hidden;pointer-events:none}
+.flip-inner:not(.flipped) .flip-b{visibility:hidden;pointer-events:none}
+.flip-f,.flip-b{position:absolute;width:100%;height:100%;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:var(--radius)}
+.flip-f{background:linear-gradient(135deg,#1a0a2e,#0f2847);border:1.5px solid rgba(255,215,0,.3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;overflow:hidden}
+.flip-f::before{content:'';position:absolute;inset:0;border-radius:calc(var(--radius) - 2px);background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.06) 50%,transparent 60%);background-size:200% 200%;animation:shimmer 2s linear infinite}
+.pokeball-card-mini{width:44px;height:44px;opacity:.7;animation:float 2.5s ease-in-out infinite}
+.reveal-hint{font-size:7px;color:rgba(255,215,0,.45);letter-spacing:2px;text-transform:uppercase;font-weight:800;position:relative;z-index:1}
+.flip-b{background:var(--bg-card);transform:rotateY(180deg);border:1.5px solid;padding:8px 6px;display:flex;flex-direction:column;align-items:center;overflow:hidden}
+.poke-art-bg{border-radius:10px;width:100%;flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:5px}
+.poke-art-bg img{width:80%;height:80%;object-fit:contain;display:block}
+.poke-name{font-size:10px;font-weight:800;color:#fff;margin-bottom:3px;text-align:center;line-height:1.2;word-break:break-word}
+[data-theme="light"] .poke-name{color:var(--text)}
+.poke-types{display:flex;gap:3px;justify-content:center;flex-wrap:wrap;margin-bottom:4px}
+.type-badge{font-size:7px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;color:#fff;padding:2px 5px;border-radius:5px;white-space:nowrap}
+.poke-flavor{font-size:8px;color:rgba(255,255,255,.4);font-style:italic;line-height:1.3;text-align:center;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
+.btn-reveal-all{width:100%;padding:10px;background:linear-gradient(90deg,rgba(255,215,0,.1),rgba(255,215,0,.04));border:1px dashed rgba(255,215,0,.25);border-radius:12px;color:var(--yellow);font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;cursor:pointer;margin-bottom:16px;letter-spacing:1px;transition:background .2s}
+.btn-reveal-all:hover{background:linear-gradient(90deg,rgba(255,215,0,.2),rgba(255,215,0,.08))}
+
+/* ── SONGS ── */
+.dna-section{background:var(--bg-mid);border-radius:18px;padding:16px;margin-bottom:18px;border:1px solid var(--border)}
+.dna-title{font-size:16px;font-weight:800;text-align:center;margin-bottom:14px}
+.song-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.song-row:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
+.song-num{font-size:11px;font-weight:800;color:var(--text3);min-width:18px;padding-top:2px}
+.song-info{flex:1;min-width:0}
+.song-name{font-size:12px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.song-artist{font-size:10px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ── HISTORY SECTION ── */
+.history-section{background:var(--bg-mid);border-radius:18px;padding:16px;margin-bottom:18px;border:1px solid var(--border)}
+.history-title{font-size:15px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.history-empty{font-size:12px;color:var(--text3);text-align:center;padding:12px 0}
+.history-entry{background:var(--bg);border-radius:12px;padding:12px;margin-bottom:10px;border:1px solid var(--border);cursor:pointer;transition:border-color .2s}
+.history-entry:hover{border-color:var(--green)}
+.history-entry:last-child{margin-bottom:0}
+.history-date{font-size:10px;color:var(--text3);margin-bottom:6px;display:flex;align-items:center;justify-content:space-between}
+.history-medal{font-size:11px;font-weight:800;color:var(--yellow)}
+.history-sprites{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}
+.history-sprites img{width:32px;height:32px;object-fit:contain;filter:drop-shadow(0 0 4px rgba(255,255,255,.1))}
+.history-genres{display:flex;gap:4px;flex-wrap:wrap}
+.history-genre-tag{font-size:9px;font-weight:700;padding:2px 6px;border-radius:6px;color:#fff}
+.btn-history-battle{font-size:10px;background:linear-gradient(90deg,rgba(239,68,68,.2),rgba(234,179,8,.2));border:1px solid rgba(239,68,68,.3);color:#f87171;padding:4px 10px;border-radius:8px;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800}
+
+/* ── BATTLE SCREEN ── */
+#battle-screen{flex-direction:column;align-items:center;justify-content:flex-start;padding:60px 16px 48px;background:var(--bg)}
+.battle-header{text-align:center;margin-bottom:20px}
+.battle-title{font-size:22px;font-weight:900;margin-bottom:6px;background:linear-gradient(135deg,#ef4444,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.battle-subtitle{font-size:13px;color:var(--text2)}
+.battle-arena{width:100%;max-width:500px;display:flex;flex-direction:column;gap:12px}
+.battle-team{background:var(--bg-mid);border-radius:16px;padding:14px;border:1px solid var(--border)}
+.battle-team-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;opacity:.7}
+.battle-team-label.red{color:#ef4444}
+.battle-team-label.blue{color:#3b82f6}
+.battle-pokemons{display:flex;gap:6px;flex-wrap:wrap}
+.battle-poke{text-align:center;flex:1;min-width:60px}
+.battle-poke img{width:48px;height:48px;object-fit:contain}
+.battle-poke-name{font-size:8px;font-weight:700;color:var(--text2)}
+.battle-vs{text-align:center;font-size:32px;font-weight:900;background:linear-gradient(135deg,#ef4444,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:pulseBattle 1.5s ease-in-out infinite}
+@keyframes pulseBattle{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+.battle-result-wrap{display:none;background:var(--bg-mid);border-radius:16px;padding:20px;text-align:center;border:1px solid var(--border)}
+.battle-result-wrap.show{display:block;animation:popIn .5s ease}
+.battle-result-emoji{font-size:56px;margin-bottom:8px}
+.battle-result-title{font-size:18px;font-weight:900;margin-bottom:6px}
+.battle-result-desc{font-size:13px;color:var(--text2);line-height:1.6}
+.battle-bars{margin-top:16px}
+.battle-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.battle-bar-label{font-size:10px;font-weight:800;color:var(--text3);width:64px;text-align:right}
+.battle-bar-track{flex:1;height:8px;background:var(--bg);border-radius:10px;overflow:hidden}
+.battle-bar-fill{height:100%;border-radius:10px;transition:width 1s ease}
+.battle-bar-val{font-size:10px;font-weight:800;color:var(--text2);width:28px}
+.btn-fight{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(90deg,#ef4444,#b91c1c);color:#fff;font-family:'Nunito',sans-serif;font-size:15px;font-weight:900;border:none;border-radius:50px;cursor:pointer;padding:13px 28px;margin:16px auto 0;box-shadow:0 0 20px rgba(239,68,68,.3);transition:transform .15s}
+.btn-fight:hover{transform:scale(1.05)}
+.btn-back-results{background:none;border:none;color:var(--text3);font-family:'Nunito',sans-serif;font-size:12px;cursor:pointer;padding:8px;margin-top:8px;display:block;margin-left:auto;margin-right:auto}
+
+/* ── SHARE MODAL ── */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;display:none;align-items:center;justify-content:center;padding:16px}
+.modal-bg.open{display:flex}
+.modal-box{background:var(--bg-mid);border-radius:20px;padding:20px;width:100%;max-width:380px;border:1px solid var(--border)}
+.modal-box h3{font-size:16px;font-weight:800;margin-bottom:14px;text-align:center}
+.modal-tabs{display:flex;gap:8px;margin-bottom:14px}
+.modal-tab{flex:1;padding:9px;border-radius:10px;border:1.5px solid var(--border);background:none;color:var(--text2);font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;cursor:pointer;transition:all .2s}
+.modal-tab.active{background:rgba(29,185,84,.15);border-color:var(--green);color:var(--green)}
+.share-preview{border-radius:12px;overflow:hidden;margin-bottom:14px;border:1px solid var(--border)}
+.share-buttons{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.share-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border-radius:10px;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;transition:transform .15s}
+.share-btn:hover{transform:scale(1.04)}
+.share-btn.whatsapp{background:#25D366;color:#fff}
+.share-btn.twitter{background:#1DA1F2;color:#fff}
+.share-btn.instagram{background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);color:#fff}
+.share-btn.dl{background:var(--green);color:#fff}
+.btn-close-modal{width:100%;padding:10px;background:none;border:1px solid var(--border);border-radius:10px;color:var(--text2);font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer}
+
+/* ── ACTIONS ── */
+.actions{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:22px}
+.btn-share-main{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(90deg,var(--green),#17a34a);color:#fff;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;border:none;border-radius:50px;cursor:pointer;padding:13px 26px;box-shadow:0 0 20px var(--shadow-green);transition:transform .15s}
+.btn-share-main:hover{transform:scale(1.04)}
+.btn-regen{display:inline-flex;align-items:center;gap:8px;background:rgba(138,43,226,.2);border:1px solid rgba(138,43,226,.4);color:#c084fc;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;border-radius:50px;cursor:pointer;padding:10px 22px;transition:transform .15s}
+.btn-regen:hover{transform:scale(1.04)}
+.btn-battle-open{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(90deg,rgba(239,68,68,.2),rgba(245,158,11,.2));border:1px solid rgba(239,68,68,.35);color:#f87171;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;border-radius:50px;cursor:pointer;padding:10px 22px;transition:transform .15s}
+.btn-battle-open:hover{transform:scale(1.04)}
+.btn-reset{background:none;border:none;color:var(--text3);font-family:'Nunito',sans-serif;font-size:12px;font-weight:600;cursor:pointer;padding:6px}
+/* ── CLIENT ID SETUP ── */
+.setup-box{background:var(--bg-mid);border:1px solid var(--border);border-radius:20px;padding:24px;width:100%;max-width:340px;margin-top:20px;text-align:left}
+.setup-box-title{font-size:13px;font-weight:800;color:var(--text2);letter-spacing:.5px;text-transform:uppercase;margin-bottom:14px;text-align:center}
+.setup-step{display:flex;gap:10px;align-items:flex-start;margin-bottom:12px}
+.setup-step-num{width:22px;height:22px;border-radius:50%;background:var(--green);color:#000;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.setup-step-text{font-size:12px;color:var(--text2);line-height:1.5}
+.setup-step-text a{color:var(--green);text-decoration:none;font-weight:700}
+.setup-step-text a:hover{text-decoration:underline}
+.setup-input-wrap{margin-top:16px;position:relative}
+.setup-input{width:100%;padding:13px 16px;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;color:var(--text);font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;outline:none;transition:border-color .2s}
+.setup-input:focus{border-color:var(--green)}
+.setup-input::placeholder{color:var(--text3);font-weight:600}
+.setup-input-label{font-size:11px;font-weight:800;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;display:block}
+.setup-error{font-size:11px;color:#f87171;margin-top:8px;display:none;font-weight:700}
+.setup-error.show{display:block}
+.btn-setup-save{width:100%;margin-top:12px;padding:13px;background:linear-gradient(90deg,var(--green),var(--green2));color:#000;font-family:'Nunito',sans-serif;font-size:14px;font-weight:900;border:none;border-radius:50px;cursor:pointer;transition:transform .15s;box-shadow:0 0 20px var(--shadow-green)}
+.btn-setup-save:hover{transform:scale(1.02)}
+.saved-id-wrap{background:rgba(29,185,84,.08);border:1px solid rgba(29,185,84,.2);border-radius:12px;padding:10px 14px;margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.saved-id-text{font-size:11px;color:var(--green);font-weight:700;font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btn-change-id{font-size:10px;font-weight:800;color:var(--text3);background:none;border:none;cursor:pointer;padding:4px;white-space:nowrap;font-family:'Nunito',sans-serif}
+.btn-change-id:hover{color:var(--text2)}
+
+/* ── KO-FI SUPPORT ── */
+.kofi-section{background:linear-gradient(135deg,rgba(255,94,91,.1),rgba(255,153,51,.08));border:1px solid rgba(255,94,91,.25);border-radius:18px;padding:20px;margin-bottom:18px;text-align:center}
+.kofi-emoji{font-size:32px;margin-bottom:8px}
+.kofi-title{font-size:14px;font-weight:800;margin-bottom:4px;color:var(--text)}
+.kofi-desc{font-size:11px;color:var(--text2);margin-bottom:14px;line-height:1.5}
+.btn-kofi{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(90deg,#ff5f5b,#ff9933);color:#fff;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;border:none;border-radius:50px;cursor:pointer;padding:11px 24px;text-decoration:none;transition:transform .15s;box-shadow:0 0 20px rgba(255,94,91,.3)}
+.btn-kofi:hover{transform:scale(1.05)}
+
+/* ── FOOTER ── */
+.res-footer{text-align:center;padding-bottom:8px}
+.hashtag{color:var(--green);font-size:14px;font-weight:800;margin-bottom:4px}
+.res-attr{font-size:10px;color:var(--text3);opacity:.6}
+
+/* ── ERROR ── */
+#error{flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px;gap:16px}
+#error h2{font-size:22px;font-weight:800}
+#error p{color:var(--text2);font-size:14px;max-width:300px;line-height:1.6}
+
+/* ── SHARE CARD (off-screen) ── */
+#share-card-render{position:fixed;left:-9999px;top:0;width:1080px;height:1920px;padding:80px 72px;font-family:'Nunito',sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:space-between;overflow:hidden}
+#share-card-render.sc-dark{background:#0d1117}
+#share-card-render.sc-light{background:#f0f4f8}
+#share-card-render::before{content:'';position:absolute;top:-100px;left:-100px;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(29,185,84,.12) 0%,transparent 70%);pointer-events:none}
+#share-card-render::after{content:'';position:absolute;bottom:-100px;right:-100px;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(255,215,0,.08) 0%,transparent 70%);pointer-events:none}
+.sc-top{text-align:center;width:100%;position:relative;z-index:1}
+.sc-pokeball-logo{width:120px;height:120px;margin:0 auto 40px}
+.sc-app-name{font-size:72px;font-weight:900;letter-spacing:-2px;margin-bottom:12px}
+.sc-dark .sc-app-name{color:#e6edf3}
+.sc-light .sc-app-name{color:#1a202c}
+.sc-app-name span{color:#1DB954}
+.sc-subtitle{font-size:32px;margin-bottom:48px;font-weight:600}
+.sc-dark .sc-subtitle{color:rgba(255,255,255,.5)}
+.sc-light .sc-subtitle{color:rgba(0,0,0,.45)}
+.sc-user{font-size:40px;color:#1DB954;font-weight:800;margin-bottom:20px}
+.sc-medal{display:inline-flex;align-items:center;gap:12px;background:rgba(255,215,0,.12);border:2px solid rgba(255,215,0,.35);border-radius:60px;padding:14px 32px;font-size:32px;font-weight:800;color:#FFD700;margin-bottom:36px}
+.sc-badges{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-bottom:10px}
+.sc-badge{padding:10px 24px;border-radius:30px;font-size:26px;font-weight:700;border:2px solid}
+.sc-grid-wrap{width:100%;position:relative;z-index:1}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:48px;width:100%}
+.sc-poke{border-radius:28px;padding:28px 16px;text-align:center;border:2px solid}
+.sc-dark .sc-poke{background:linear-gradient(135deg,#0f2847,#0d1a33)}
+.sc-light .sc-poke{background:linear-gradient(135deg,#dbeafe,#e0e7ff)}
+.sc-poke img{width:180px;height:180px;object-fit:contain}
+.sc-poke-name{font-size:26px;font-weight:800;margin-top:12px}
+.sc-dark .sc-poke-name{color:#fff}
+.sc-light .sc-poke-name{color:#1a202c}
+.sc-poke-types{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+.sc-type-badge{font-size:18px;font-weight:800;text-transform:uppercase;color:#fff;padding:5px 14px;border-radius:10px}
+.sc-songs{width:100%;position:relative;z-index:1;margin-bottom:20px}
+.sc-songs-title{font-size:30px;font-weight:800;text-align:center;margin-bottom:16px}
+.sc-dark .sc-songs-title{color:rgba(255,255,255,.7)}
+.sc-light .sc-songs-title{color:rgba(0,0,0,.6)}
+.sc-song-row{display:flex;align-items:center;gap:16px;margin-bottom:10px;border-radius:12px;padding:12px 20px}
+.sc-dark .sc-song-row{background:rgba(255,255,255,.04)}
+.sc-light .sc-song-row{background:rgba(0,0,0,.05)}
+.sc-song-num{font-size:20px;font-weight:800;min-width:28px}
+.sc-dark .sc-song-num{color:rgba(255,255,255,.25)}
+.sc-light .sc-song-num{color:rgba(0,0,0,.3)}
+.sc-song-info{flex:1;min-width:0}
+.sc-song-name{font-size:22px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sc-dark .sc-song-name{color:#fff}
+.sc-light .sc-song-name{color:#1a202c}
+.sc-song-artist{font-size:17px}
+.sc-dark .sc-song-artist{color:rgba(255,255,255,.45)}
+.sc-light .sc-song-artist{color:rgba(0,0,0,.5)}
+.sc-footer-wrap{text-align:center;position:relative;z-index:1}
+.sc-hashtag{font-size:52px;font-weight:900;color:#1DB954;margin-bottom:8px}
+.sc-attr{font-size:24px}
+.sc-dark .sc-attr{color:rgba(255,255,255,.2)}
+.sc-light .sc-attr{color:rgba(0,0,0,.25)}
+</style>
+</head>
+<body>
+
+<div class="sparkles-overlay" id="sparkles-overlay"></div>
+<div id="share-card-render"></div>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <button class="topbar-btn lang-btn" onclick="toggleLang()" id="lang-btn">🌐 EN</button>
+  <button class="topbar-btn" onclick="toggleTheme()" id="theme-btn">☀️</button>
+</div>
+
+<!-- SHARE MODAL -->
+<div class="modal-bg" id="share-modal-bg" onclick="closeShareModal(event)">
+  <div class="modal-box">
+    <h3 id="modal-title">🖼️ Descargar imagen</h3>
+    <div class="modal-tabs">
+      <button class="modal-tab active" id="tab-team" onclick="switchTab('team')">⚡ <span data-i18n="myTeam">Mi equipo</span></button>
+      <button class="modal-tab" id="tab-songs" onclick="switchTab('songs')">🎵 Top 10</button>
+    </div>
+    <div class="share-preview" id="share-preview-img">
+      <div style="padding:20px;text-align:center;color:var(--text3);font-size:12px" data-i18n="generating">Generando...</div>
+    </div>
+    <div class="share-buttons">
+      <button class="share-btn whatsapp" onclick="shareToApp('whatsapp')">📱 WhatsApp</button>
+      <button class="share-btn twitter" onclick="shareToApp('twitter')">🐦 Twitter/X</button>
+      <button class="share-btn instagram" onclick="shareToApp('instagram')">📸 Instagram</button>
+      <button class="share-btn dl" onclick="downloadCurrentImage()">⬇️ <span data-i18n="save">Guardar</span></button>
+    </div>
+    <button class="btn-close-modal" onclick="closeShareModal()" data-i18n="close">Cerrar</button>
+  </div>
+</div>
+
+<!-- LANDING -->
+<div id="landing" class="screen active">
+  <div class="pokeball-wrap">
+    <svg class="pokeball-svg" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="48" fill="#1a1a2e" stroke="#1DB954" stroke-width="2"/>
+      <path d="M50 2 A48 48 0 0 1 98 50 L2 50 A48 48 0 0 1 50 2Z" fill="#cc2200"/>
+      <path d="M50 98 A48 48 0 0 1 2 50 L98 50 A48 48 0 0 1 50 98Z" fill="#1a1a2e"/>
+      <line x1="2" y1="50" x2="98" y2="50" stroke="#1DB954" stroke-width="2.5"/>
+      <circle cx="50" cy="50" r="14" fill="#1a1a2e" stroke="#1DB954" stroke-width="2.5"/>
+      <circle cx="50" cy="50" r="7" fill="#fff" opacity=".9"/>
+    </svg>
+  </div>
+  <h1 class="title">Poké<span>Beats</span></h1>
+  <p class="tagline" data-i18n="tagline">Descubre el equipo Pokémon que tu música ha elegido para ti</p>
+  <div class="divider"></div>
+
+  <!-- State A: no Client ID saved yet -->
+  <div id="setup-panel">
+    <div class="setup-box">
+      <div class="setup-box-title" data-i18n="setupTitle">⚙️ Configuración rápida (1 vez)</div>
+      <div class="setup-step">
+        <div class="setup-step-num">1</div>
+        <div class="setup-step-text" data-i18n="setupStep1">Entrá a <a href="https://developer.spotify.com/dashboard" target="_blank" rel="noopener">developer.spotify.com/dashboard</a> e iniciá sesión con tu cuenta de Spotify</div>
+      </div>
+      <div class="setup-step">
+        <div class="setup-step-num">2</div>
+        <div class="setup-step-text" data-i18n="setupStep2">Hacé clic en <strong>"Create app"</strong>. Nombre: PokéBeats. Redirect URI: <strong id="redirect-uri-hint"></strong></div>
+      </div>
+      <div class="setup-step">
+        <div class="setup-step-num">3</div>
+        <div class="setup-step-text" data-i18n="setupStep3">Copiá tu <strong>Client ID</strong> y pegalo acá abajo</div>
+      </div>
+      <div class="setup-input-wrap">
+        <label class="setup-input-label" for="client-id-input" data-i18n="clientIdLabel">Tu Client ID</label>
+        <input class="setup-input" id="client-id-input" type="text" placeholder="ej: ee6b358b259b4b849f66..." autocomplete="off" autocorrect="off" spellcheck="false"/>
+        <div class="setup-error" id="setup-error" data-i18n="setupError">El Client ID debe tener 32 caracteres</div>
+      </div>
+      <button class="btn-setup-save" onclick="saveClientId()" data-i18n="setupSave">Guardar y continuar →</button>
+    </div>
+  </div>
+
+  <!-- State B: Client ID already saved -->
+  <div id="ready-panel" style="display:none;width:100%;max-width:340px;text-align:center">
+    <div class="saved-id-wrap">
+      <span class="saved-id-text" id="saved-id-display"></span>
+      <button class="btn-change-id" onclick="clearClientId()">✏️ <span data-i18n="change">Cambiar</span></button>
+    </div>
+    <button class="btn-spotify" style="margin-top:20px;width:100%;justify-content:center" onclick="startAuth()">
+      <svg viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+      <span data-i18n="connectSpotify">Conectar con Spotify</span>
+    </button>
+  </div>
+
+  <p class="attribution">Powered by Spotify API + PokéAPI · <a href="https://github.com/elkingsalvatore/pokebeats" target="_blank" style="color:var(--green);text-decoration:none">GitHub</a></p>
+</div>
+
+<!-- LOADING -->
+<div id="loading" class="screen">
+  <svg class="spin-ball" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="48" fill="#0f2847" stroke="#1DB954" stroke-width="2"/>
+    <path d="M50 2 A48 48 0 0 1 98 50 L2 50 A48 48 0 0 1 50 2Z" fill="#cc2200"/>
+    <path d="M50 98 A48 48 0 0 1 2 50 L98 50 A48 48 0 0 1 50 98Z" fill="#0f2847"/>
+    <line x1="2" y1="50" x2="98" y2="50" stroke="#1DB954" stroke-width="2.5"/>
+    <circle cx="50" cy="50" r="12" fill="#0f2847" stroke="#1DB954" stroke-width="2.5"/>
+    <circle cx="50" cy="50" r="6" fill="#fff" opacity=".9"/>
+  </svg>
+  <div id="loading-msg" data-i18n="analyzing">Analizando tu música...</div>
+  <div id="loading-sub">⚡</div>
+</div>
+
+<!-- MEDAL SCREEN -->
+<div id="medal-screen" class="screen">
+  <p class="medal-intro" data-i18n="medalIntro">Tu vibra musical de este mes te ha ganado una medalla especial...</p>
+  <div class="card-scene" id="card-scene" onclick="revealMedal()">
+    <div class="card-body spinning" id="card-body">
+      <div class="card-side card-back">
+        <svg class="pokeball-on-card" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="48" fill="#1a1a2e" stroke="rgba(255,215,0,.6)" stroke-width="2.5"/>
+          <path d="M50 2 A48 48 0 0 1 98 50 L2 50 A48 48 0 0 1 50 2Z" fill="#cc2200"/>
+          <path d="M50 98 A48 48 0 0 1 2 50 L98 50 A48 48 0 0 1 50 98Z" fill="#1a1a2e"/>
+          <line x1="2" y1="50" x2="98" y2="50" stroke="rgba(255,215,0,.6)" stroke-width="2.5"/>
+          <circle cx="50" cy="50" r="14" fill="#1a1a2e" stroke="rgba(255,215,0,.6)" stroke-width="2.5"/>
+          <circle cx="50" cy="50" r="7" fill="rgba(255,215,0,.8)" opacity=".9"/>
+        </svg>
+        <div class="mystery-symbol">✨ MEDAL ✨</div>
+      </div>
+      <div class="card-side card-front">
+        <div class="medal-emoji-big" id="medal-emoji">🏅</div>
+        <div class="medal-name-big" id="medal-name">Medal</div>
+        <div class="medal-desc-text" id="medal-desc">...</div>
+      </div>
+    </div>
+  </div>
+  <p class="tap-hint" id="tap-hint" data-i18n="tapReveal">✨ Toca la carta para revelar</p>
+  <button class="btn-gold" id="btn-gold" onclick="goToResults()" data-i18n="seeTeam">⚡ Ver mi equipo</button>
+</div>
+
+<!-- RESULTS -->
+<div id="results" class="screen">
+  <div class="results-inner" id="results-inner"></div>
+</div>
+
+<!-- BATTLE SCREEN -->
+<div id="battle-screen" class="screen">
+  <div style="width:100%;max-width:500px">
+    <div class="battle-header">
+      <div class="battle-title">⚔️ <span data-i18n="battleMode">Modo Batalla</span></div>
+      <div class="battle-subtitle" id="battle-subtitle" data-i18n="battleSubtitle">Tu equipo actual vs. un equipo del historial</div>
+    </div>
+    <div class="battle-arena">
+      <div class="battle-team" id="battle-team-a">
+        <div class="battle-team-label red" data-i18n="currentTeam">🔴 TU EQUIPO ACTUAL</div>
+        <div class="battle-pokemons" id="battle-pokemons-a"></div>
+      </div>
+      <div class="battle-vs">VS</div>
+      <div class="battle-team" id="battle-team-b">
+        <div class="battle-team-label blue" id="battle-team-b-label">🔵 EQUIPO RIVAL</div>
+        <div class="battle-pokemons" id="battle-pokemons-b"></div>
+      </div>
+      <button class="btn-fight" onclick="runBattle()" id="btn-fight" data-i18n="fight">⚔️ ¡PELEAR!</button>
+      <div class="battle-result-wrap" id="battle-result"></div>
+      <button class="btn-back-results" onclick="showScreen('results')" data-i18n="backResults">← Volver a resultados</button>
+    </div>
+  </div>
+</div>
+
+<!-- ERROR -->
+<div id="error" class="screen">
+  <div style="font-size:48px">😵</div>
+  <h2 data-i18n="errorTitle">Algo salió mal</h2>
+  <p id="error-msg"></p>
+  <p id="error-hint" style="font-size:12px;color:var(--text3);max-width:300px;line-height:1.6;margin-top:8px"></p>
+  <button class="btn-spotify" onclick="showLanding()" data-i18n="back">Volver al inicio</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+// ═══════════════════════════════════
+// CONFIG — dynamic Client ID
+// ═══════════════════════════════════
+const CLIENT_ID_KEY='pb_client_id';
+const REDIRECT_URI=window.location.origin+window.location.pathname;
+const SCOPES='user-top-read';
+function getClientId(){return localStorage.getItem(CLIENT_ID_KEY)||''}
+
+// ═══════════════════════════════════
+// I18N
+// ═══════════════════════════════════
+const LANGS={
+  es:{
+    tagline:'Descubre el equipo Pokémon que tu música ha elegido para ti',
+    desc:'Conecta tu cuenta de Spotify y descubre qué Pokémon representan tus gustos musicales de este mes',
+    connectSpotify:'Conectar con Spotify',
+    analyzing:'Analizando tu música...',
+    medalIntro:'Tu vibra musical de este mes te ha ganado una medalla especial...',
+    tapReveal:'✨ Toca la carta para revelar tu medalla',
+    seeTeam:'⚡ Ver mi equipo Pokémon',
+    revealAll:'✨ Revelar todo el equipo de una vez',
+    myTeam:'Mi equipo',
+    generating:'⏳ Generando imagen...',
+    save:'Guardar',
+    close:'Cerrar',
+    shareImg:'🖼️ Compartir como imagen',
+    newTeam:'🎲 Nuevo equipo (mismos géneros)',
+    battleBtn:'⚔️ Modo Batalla',
+    changeAccount:'🔄 Cambiar cuenta Spotify',
+    battleMode:'Modo Batalla',
+    battleSubtitle:'Tu equipo actual vs. un equipo del historial',
+    currentTeam:'🔴 TU EQUIPO ACTUAL',
+    fight:'⚔️ ¡PELEAR!',
+    backResults:'← Volver a resultados',
+    errorTitle:'Algo salió mal',
+    back:'Volver al inicio',
+    top10:'🎵 Tus 10 canciones del mes',
+    history:'📅 Historial de equipos',
+    historyEmpty:'Aquí aparecerán tus equipos anteriores',
+    support:'☕ Apoyá PokéBeats',
+    supportDesc:'¿Te gustó? Podés invitarme un café para seguir mejorando la app 💜',
+    supportBtn:'☕ Apoyar en Ko-fi',
+    rivalTeam:'🔵 EQUIPO RIVAL',
+    setupTitle:'⚙️ Configuración rápida (1 vez)',
+    setupStep1:'Entrá a <a href="https://developer.spotify.com/dashboard" target="_blank" rel="noopener">developer.spotify.com/dashboard</a> e iniciá sesión con tu cuenta de Spotify',
+    setupStep2:'Hacé clic en <strong>"Create app"</strong>. Usá cualquier nombre. En Redirect URI pegá esta URL exacta:',
+    setupStep3:'Copiá tu <strong>Client ID</strong> y pegalo acá abajo',
+    clientIdLabel:'Tu Client ID de Spotify',
+    setupError:'El Client ID debe tener 32 caracteres alfanuméricos',
+    setupSave:'Guardar y continuar →',
+    change:'Cambiar',
+  },
+  en:{
+    tagline:'Discover the Pokémon team your music has chosen for you',
+    desc:'Connect your Spotify account and find out which Pokémon represent your musical taste this month',
+    connectSpotify:'Connect with Spotify',
+    analyzing:'Analyzing your music...',
+    medalIntro:'Your musical vibe this month has earned you a special medal...',
+    tapReveal:'✨ Tap the card to reveal your medal',
+    seeTeam:'⚡ See my Pokémon team',
+    revealAll:'✨ Reveal the whole team at once',
+    myTeam:'My team',
+    generating:'⏳ Generating image...',
+    save:'Save',
+    close:'Close',
+    shareImg:'🖼️ Share as image',
+    newTeam:'🎲 New team (same genres)',
+    battleBtn:'⚔️ Battle Mode',
+    changeAccount:'🔄 Change Spotify account',
+    battleMode:'Battle Mode',
+    battleSubtitle:'Your current team vs. a team from history',
+    currentTeam:'🔴 YOUR CURRENT TEAM',
+    fight:'⚔️ FIGHT!',
+    backResults:'← Back to results',
+    errorTitle:'Something went wrong',
+    back:'Back to home',
+    top10:'🎵 Your top 10 songs this month',
+    history:'📅 Team history',
+    historyEmpty:'Your previous teams will appear here',
+    support:'☕ Support PokéBeats',
+    supportDesc:'Enjoying it? Buy me a coffee to keep improving the app 💜',
+    supportBtn:'☕ Support on Ko-fi',
+    rivalTeam:'🔵 RIVAL TEAM',
+    setupTitle:'⚙️ Quick setup (one time)',
+    setupStep1:'Go to <a href="https://developer.spotify.com/dashboard" target="_blank" rel="noopener">developer.spotify.com/dashboard</a> and log in with your Spotify account',
+    setupStep2:'Click <strong>"Create app"</strong>. Use any name. In Redirect URI paste this exact URL:',
+    setupStep3:'Copy your <strong>Client ID</strong> and paste it below',
+    clientIdLabel:'Your Spotify Client ID',
+    setupError:'Client ID must be 32 alphanumeric characters',
+    setupSave:'Save and continue →',
+    change:'Change',
+  }
+};
+let _lang=localStorage.getItem('pb_lang')||'es';
+
+function t(key){return LANGS[_lang][key]||LANGS['es'][key]||key}
+
+function applyLang(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key=el.dataset.i18n;
+    const val=t(key);
+    // steps 1-3 contain HTML links/bold — use innerHTML
+    if(key==='setupStep1'||key==='setupStep2'||key==='setupStep3') el.innerHTML=val;
+    else el.textContent=val;
+  });
+  document.getElementById('lang-btn').textContent=_lang==='es'?'🌐 EN':'🌐 ES';
+  document.documentElement.lang=_lang;
+  // update redirect URI hint
+  const hint=document.getElementById('redirect-uri-hint');
+  if(hint) hint.textContent=REDIRECT_URI;
+}
+
+function toggleLang(){
+  _lang=_lang==='es'?'en':'es';
+  localStorage.setItem('pb_lang',_lang);
+  applyLang();
+}
+
+// ═══════════════════════════════════
+// THEME
+// ═══════════════════════════════════
+let _theme=localStorage.getItem('pb_theme')||'dark';
+function applyTheme(){
+  document.documentElement.setAttribute('data-theme',_theme);
+  document.getElementById('theme-btn').textContent=_theme==='dark'?'☀️':'🌙';
+}
+function toggleTheme(){
+  _theme=_theme==='dark'?'light':'dark';
+  localStorage.setItem('pb_theme',_theme);
+  _blobTeam=null;_blobSongs=null; // regenerate share images with new theme
+  applyTheme();
+}
+
+// ═══════════════════════════════════
+// STATE
+// ═══════════════════════════════════
+let _user=null,_genres=null,_team=null,_medal=null,_topTracks=null,_artistGenreMap=null;
+let _medalRevealed=false;
+let _blobTeam=null,_blobSongs=null,_activeTab='team';
+let _battleTeamB=null;
+
+// ═══════════════════════════════════
+// HISTORY (localStorage)
+// ═══════════════════════════════════
+const HISTORY_KEY='pb_history';
+const MAX_HISTORY=6;
+
+function saveToHistory(){
+  if(!_team||!_user)return;
+  const existing=getHistory();
+  const entry={
+    id:Date.now(),
+    date:new Date().toLocaleDateString(_lang==='es'?'es-HN':'en-US',{month:'short',year:'numeric'}),
+    username:_user.display_name||'',
+    medal:_medal?{emoji:_medal.emoji,name:_medal.name}:null,
+    team:_team.map(p=>({name:p.name,sprite:p.sprite,types:p.types,matchedType:p.matchedType,matchedGenre:p.matchedGenre,flavor:p.flavor})),
+    genres:_genres.slice(0,4).map(g=>({label:g.label,type:g.type}))
+  };
+  const updated=[entry,...existing].slice(0,MAX_HISTORY);
+  localStorage.setItem(HISTORY_KEY,JSON.stringify(updated));
+}
+
+function getHistory(){
+  try{return JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]')}catch{return[]}
+}
+
+function renderHistorySection(){
+  const history=getHistory();
+  if(history.length<=1)return''; // Don't show if only current
+  const entries=history.slice(1).map(entry=>{ // skip first (current)
+    const sprites=entry.team.slice(0,6).map(p=>`<img src="${p.sprite}" alt="${p.name}" onerror="this.style.display='none'">`).join('');
+    const genres=entry.genres.map(g=>`<span class="history-genre-tag" style="background:${TC[g.type]||'#888'}">${g.label}</span>`).join('');
+    return`<div class="history-entry" onclick="openBattle(${entry.id})">
+      <div class="history-date">
+        <span>${entry.date} ${entry.username?'· '+entry.username:''}</span>
+        ${entry.medal?`<span class="history-medal">${entry.medal.emoji} ${entry.medal.name}</span>`:''}
+      </div>
+      <div class="history-sprites">${sprites}</div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div class="history-genres">${genres}</div>
+        <button class="btn-history-battle" onclick="event.stopPropagation();openBattle(${entry.id})">⚔️ Batalla</button>
+      </div>
+    </div>`;
+  }).join('');
+  return`<div class="history-section">
+    <div class="history-title">📅 ${t('history')}</div>
+    ${entries||`<div class="history-empty">${t('historyEmpty')}</div>`}
+  </div>`;
+}
+
+// ═══════════════════════════════════
+// MEDALS
+// ═══════════════════════════════════
+const MEDALS=[
+  {emoji:'🔥',name:'Medalla Llama',nameEn:'Flame Medal',desc:'Tu música arde con intensidad. Eres pura energía.',descEn:'Your music burns with intensity. Pure energy.',types:['fire','fighting']},
+  {emoji:'💧',name:'Medalla Océano',nameEn:'Ocean Medal',desc:'Tu alma fluye como el agua. Profundo y libre.',descEn:'Your soul flows like water. Deep and free.',types:['water','ice']},
+  {emoji:'⚡',name:'Medalla Tormenta',nameEn:'Storm Medal',desc:'Electrizante. Tu playlist descarga voltaje.',descEn:'Electrifying. Your playlist discharges voltage.',types:['electric']},
+  {emoji:'🌿',name:'Medalla Selva',nameEn:'Jungle Medal',desc:'Conectado con lo natural. Tu música tiene raíces.',descEn:'Connected to nature. Your music has roots.',types:['grass','ground']},
+  {emoji:'🔮',name:'Medalla Psíquica',nameEn:'Psychic Medal',desc:'Mente elevada. Tu música trasciende lo ordinario.',descEn:'Elevated mind. Your music transcends the ordinary.',types:['psychic','fairy']},
+  {emoji:'🌙',name:'Medalla Lunar',nameEn:'Lunar Medal',desc:'Oscuro y misterioso. Tu música vive en las sombras.',descEn:'Dark and mysterious. Your music lives in the shadows.',types:['dark','ghost','poison']},
+  {emoji:'🏔️',name:'Medalla Cima',nameEn:'Summit Medal',desc:'Épico y majestuoso. Leyendas te escuchan.',descEn:'Epic and majestic. Legends listen to you.',types:['dragon','rock','steel']},
+  {emoji:'🥊',name:'Medalla Combate',nameEn:'Combat Medal',desc:'Directo al grano. Tu música golpea fuerte.',descEn:'Straight to the point. Your music hits hard.',types:['fighting','rock']},
+  {emoji:'🌟',name:'Medalla Estelar',nameEn:'Stellar Medal',desc:'Versátil y brillante. Todos los colores del universo.',descEn:'Versatile and bright. All colors of the universe.',types:['normal','flying']},
+  {emoji:'🎸',name:'Medalla Rebelde',nameEn:'Rebel Medal',desc:'Con causa propia. Tu música sacude paredes.',descEn:'With your own cause. Your music shakes walls.',types:['steel','poison']},
+];
+function getMedal(g){if(!g.length)return MEDALS[Math.floor(Math.random()*MEDALS.length)];const tp=g[0].type;return MEDALS.find(m=>m.types.includes(tp))||MEDALS[Math.floor(Math.random()*MEDALS.length)]}
+function medalName(m){return _lang==='en'?(m.nameEn||m.name):m.name}
+function medalDesc(m){return _lang==='en'?(m.descEn||m.desc):m.desc}
+
+// ═══════════════════════════════════
+// TYPE DATA
+// ═══════════════════════════════════
+const TC={normal:'#A8A878',fire:'#F08030',water:'#6890F0',electric:'#F8D030',grass:'#78C850',poison:'#A040A0',ground:'#E0C068',flying:'#A890F0',psychic:'#F85888',rock:'#B8A038',steel:'#B8B8D0',fighting:'#C03028',dragon:'#7038F8',dark:'#705848',fairy:'#EE99AC',ghost:'#705898',ice:'#98D8D8',bug:'#A8B820'};
+const TL_ES={normal:'Normal',fire:'Fuego',water:'Agua',electric:'Eléctrico',grass:'Planta',poison:'Veneno',ground:'Tierra',flying:'Volador',psychic:'Psíquico',rock:'Roca',steel:'Acero',fighting:'Lucha',dragon:'Dragón',dark:'Siniestro',fairy:'Hada',ghost:'Fantasma',ice:'Hielo',bug:'Bicho'};
+const TL_EN={normal:'Normal',fire:'Fire',water:'Water',electric:'Electric',grass:'Grass',poison:'Poison',ground:'Ground',flying:'Flying',psychic:'Psychic',rock:'Rock',steel:'Steel',fighting:'Fighting',dragon:'Dragon',dark:'Dark',fairy:'Fairy',ghost:'Ghost',ice:'Ice',bug:'Bug'};
+function TL(t){return(_lang==='en'?TL_EN:TL_ES)[t]||t}
+
+const GENRE_RULES=[
+  {keywords:['k-pop','kpop'],type:'fairy',label:'K-Pop'},
+  {keywords:['j-pop','jpop'],type:'fairy',label:'J-Pop'},
+  {keywords:['neo-soul','neo soul'],type:'psychic',label:'Neo Soul'},
+  {keywords:['hard-rock','hard rock','hardcore'],type:'rock',label:'Hard Rock'},
+  {keywords:['hip-hop','hip hop','rap','hiphop'],type:'fighting',label:'Hip-Hop'},
+  {keywords:['r-n-b','rnb','r&b','soul'],type:'psychic',label:'R&B'},
+  {keywords:['reggaeton','reggaetón','latin','salsa','latino','tropical','bachata','cumbia'],type:'fire',label:'Reggaetón'},
+  {keywords:['electronic','edm','house','techno','dance','electro','trance','dubstep'],type:'electric',label:'Electronic'},
+  {keywords:['classical','orchestral','instrumental','orchestra','symphony','piano'],type:'dragon',label:'Classical'},
+  {keywords:['indie','alternative'],type:'poison',label:'Indie'},
+  {keywords:['reggae','dub','ska'],type:'grass',label:'Reggae'},
+  {keywords:['folk','country','acoustic','americana'],type:'ground',label:'Folk'},
+  {keywords:['funk','disco'],type:'ghost',label:'Funk'},
+  {keywords:['punk'],type:'dark',label:'Punk'},
+  {keywords:['trap','drill'],type:'dark',label:'Trap'},
+  {keywords:['ambient','new-age','chill','lo-fi','lofi'],type:'flying',label:'Ambient'},
+  {keywords:['gospel','worship'],type:'flying',label:'Gospel'},
+  {keywords:['jazz','blues'],type:'water',label:'Jazz'},
+  {keywords:['metal','metalcore'],type:'steel',label:'Metal'},
+  {keywords:['rock'],type:'rock',label:'Rock'},
+  {keywords:['pop'],type:'normal',label:'Pop'},
+];
+
+const FLAVOR_ES=['Tu amor por','Tu pasión por','Tu vibra con','Tu conexión con','Tu devoción por','Tu energía de'];
+const FLAVOR_EN=['Your love for','Your passion for','Your vibe with','Your connection to','Your devotion to','Your energy from'];
+function FLAVOR(i){return(_lang==='en'?FLAVOR_EN:FLAVOR_ES)[i%6]}
+
+// ═══════════════════════════════════
+// UTILS
+// ═══════════════════════════════════
+const POKEBALL_SVG=`<svg viewBox="0 0 100 100" class="pokeball-card-mini"><circle cx="50" cy="50" r="48" fill="#1a1a2e" stroke="rgba(255,215,0,.5)" stroke-width="2.5"/><path d="M50 2 A48 48 0 0 1 98 50 L2 50 A48 48 0 0 1 50 2Z" fill="#cc2200"/><path d="M50 98 A48 48 0 0 1 2 50 L98 50 A48 48 0 0 1 50 98Z" fill="#1a1a2e"/><line x1="2" y1="50" x2="98" y2="50" stroke="rgba(255,215,0,.5)" stroke-width="2.5"/><circle cx="50" cy="50" r="14" fill="#1a1a2e" stroke="rgba(255,215,0,.5)" stroke-width="2.5"/><circle cx="50" cy="50" r="7" fill="rgba(255,215,0,.7)"/></svg>`;
+
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function cap(n){return n.split('-').map(p=>p[0].toUpperCase()+p.slice(1)).join(' ')}
+async function sha256(s){return crypto.subtle.digest('SHA-256',new TextEncoder().encode(s))}
+function b64url(buf){const b=new Uint8Array(buf);let s='';b.forEach(x=>s+=String.fromCharCode(x));return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
+function rstr(len){const c='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';const a=new Uint8Array(len);crypto.getRandomValues(a);return Array.from(a).map(x=>c[x%c.length]).join('')}
+
+// ═══════════════════════════════════
+// SPARKLES
+// ═══════════════════════════════════
+function sparkle(cx,cy){
+  const ov=document.getElementById('sparkles-overlay');ov.classList.add('on');ov.innerHTML='';
+  const cols=['#FFD700','#FF69B4','#00BFFF','#7FFF00','#FF6347','#DA70D6','#fff','#1DB954'];
+  for(let i=0;i<55;i++){
+    const el=document.createElement('div');el.className='sparkle';
+    const ang=Math.random()*360,dist=60+Math.random()*160;
+    const tx=Math.cos(ang*Math.PI/180)*dist,ty=Math.sin(ang*Math.PI/180)*dist;
+    el.style.cssText=`left:${cx}px;top:${cy}px;width:${4+Math.random()*9}px;height:${4+Math.random()*9}px;background:${cols[Math.floor(Math.random()*cols.length)]};--tx:${tx}px;--ty:${ty}px;animation-delay:${Math.random()*.35}s;animation-duration:${.7+Math.random()*.8}s`;
+    ov.appendChild(el);
+  }
+  setTimeout(()=>ov.classList.remove('on'),2500);
+}
+
+// ═══════════════════════════════════
+// MEDAL
+// ═══════════════════════════════════
+function showMedalScreen(medal){
+  _medal=medal;_medalRevealed=false;
+  document.getElementById('medal-emoji').textContent=medal.emoji;
+  document.getElementById('medal-name').textContent=medalName(medal);
+  document.getElementById('medal-desc').textContent=medalDesc(medal);
+  const body=document.getElementById('card-body');
+  body.className='card-body spinning';body.style.transform='';body.style.transition='';
+  document.getElementById('btn-gold').className='btn-gold';
+  document.getElementById('btn-gold').textContent=t('seeTeam');
+  document.getElementById('tap-hint').style.opacity='1';
+  showScreen('medal-screen');
+}
+
+function revealMedal(){
+  if(_medalRevealed)return;_medalRevealed=true;
+  const body=document.getElementById('card-body');
+  body.className='card-body';
+  body.style.transition='transform 1s cubic-bezier(.4,0,.2,1)';
+  body.style.transform='rotateY(180deg)';
+  const rect=document.getElementById('card-scene').getBoundingClientRect();
+  setTimeout(()=>{
+    sparkle(rect.left+rect.width/2,rect.top+rect.height/2);
+    document.getElementById('tap-hint').style.opacity='0';
+    document.getElementById('btn-gold').className='btn-gold show';
+  },700);
+}
+
+function goToResults(){saveToHistory();renderResults()}
+
+// ═══════════════════════════════════
+// CLIENT ID MANAGEMENT
+// ═══════════════════════════════════
+function showLanding(){
+  showScreen('landing');
+  const cid=getClientId();
+  if(cid){
+    document.getElementById('setup-panel').style.display='none';
+    document.getElementById('ready-panel').style.display='block';
+    const masked=cid.slice(0,8)+'••••••••••••••••'+cid.slice(-6);
+    document.getElementById('saved-id-display').textContent=masked;
+  } else {
+    document.getElementById('setup-panel').style.display='block';
+    document.getElementById('ready-panel').style.display='none';
+    document.getElementById('redirect-uri-hint').textContent=REDIRECT_URI;
+  }
+}
+
+function saveClientId(){
+  const input=document.getElementById('client-id-input');
+  const val=input.value.trim().replace(/[^a-zA-Z0-9]/g,'');
+  const errEl=document.getElementById('setup-error');
+  if(val.length!==32){
+    errEl.classList.add('show');
+    input.style.borderColor='#f87171';
+    return;
+  }
+  errEl.classList.remove('show');
+  input.style.borderColor='';
+  localStorage.setItem(CLIENT_ID_KEY,val);
+  showLanding();
+}
+
+function clearClientId(){
+  localStorage.removeItem(CLIENT_ID_KEY);
+  localStorage.removeItem('sp_tk');
+  showLanding();
+}
+
+// Allow pressing Enter to save
+document.addEventListener('DOMContentLoaded',()=>{
+  const inp=document.getElementById('client-id-input');
+  if(inp) inp.addEventListener('keydown',e=>{if(e.key==='Enter')saveClientId()});
+});
+
+// ═══════════════════════════════════
+// AUTH
+// ═══════════════════════════════════
+async function startAuth(){
+  const cid=getClientId();
+  if(!cid){showLanding();return}
+  const v=rstr(64);localStorage.setItem('pkce_v',v);
+  const ch=b64url(await sha256(v));
+  const p=new URLSearchParams({client_id:cid,response_type:'code',redirect_uri:REDIRECT_URI,scope:SCOPES,code_challenge_method:'S256',code_challenge:ch});
+  window.location.href=`https://accounts.spotify.com/authorize?${p}`;
+}
+async function exchangeCode(code){
+  const cid=getClientId();
+  if(!cid)throw new Error('No Client ID configured');
+  const v=localStorage.getItem('pkce_v')||'';
+  const r=await fetch('https://accounts.spotify.com/api/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({client_id:cid,grant_type:'authorization_code',code,redirect_uri:REDIRECT_URI,code_verifier:v})});
+  if(!r.ok)throw new Error('Token exchange failed — revisá que el Redirect URI en tu app de Spotify sea exactamente: '+REDIRECT_URI);
+  const d=await r.json();localStorage.setItem('sp_tk',d.access_token);localStorage.removeItem('pkce_v');return d.access_token;
+}
+async function spGet(ep,tk){
+  const r=await fetch(`https://api.spotify.com/v1${ep}`,{headers:{Authorization:`Bearer ${tk}`}});
+  if(r.status===401){localStorage.removeItem('sp_tk');throw new Error('Token expired')}
+  if(r.status===403){throw new Error(_lang==='es'?'Tu cuenta de Spotify no está autorizada en esta app. Pedile al creador que te agregue como usuario de prueba.':'Your Spotify account is not authorized. Ask the creator to add you as a test user.')}
+  if(!r.ok)throw new Error('Spotify error '+r.status);return r.json();
+}
+
+// ═══════════════════════════════════
+// GENRE ANALYSIS
+// ═══════════════════════════════════
+function analyzeGenres(artists){
+  const m=new Map();
+  for(const a of artists){const used=new Set();for(const g of a.genres){const gl=g.toLowerCase();for(const r of GENRE_RULES){if(used.has(r.label))continue;if(r.keywords.some(k=>gl.includes(k))){const key=`${r.type}_${r.label}`;m.set(key,{label:r.label,type:r.type,count:(m.get(key)?.count||0)+1});used.add(r.label);break}}}}
+  return[...m.values()].sort((a,b)=>b.count-a.count);
+}
+function buildArtistTypeMap(artists){
+  const map=new Map();
+  for(const a of artists){const types=[];const used=new Set();for(const g of a.genres){const gl=g.toLowerCase();for(const r of GENRE_RULES){if(used.has(r.type))continue;if(r.keywords.some(k=>gl.includes(k))){types.push(r.type);used.add(r.type);if(types.length>=2)break}}if(types.length>=2)break}map.set(a.id,{name:a.name,types:types.length?types:['normal']})}
+  return map;
+}
+
+// ═══════════════════════════════════
+// POKÉAPI
+// ═══════════════════════════════════
+async function getTypePokemons(tp){
+  const r=await fetch(`https://pokeapi.co/api/v2/type/${tp}`);const d=await r.json();
+  return d.pokemon.map(p=>p.pokemon).filter(p=>{const id=parseInt(p.url.split('/').filter(Boolean).pop(),10);return id>0&&id<900});
+}
+async function getPokemon(name){
+  const r=await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);const d=await r.json();
+  return{id:d.id,name:d.name,sprite:d.sprites.other['official-artwork'].front_default||d.sprites.front_default,types:d.types.map(t=>t.type.name),stats:{hp:d.stats[0].base_stat,atk:d.stats[1].base_stat,def:d.stats[2].base_stat,spd:d.stats[5].base_stat}};
+}
+async function buildTeam(genres){
+  const slots=[],used=new Set();
+  for(const g of genres){if(slots.length>=6)break;if(!used.has(g.type)){slots.push(g);used.add(g.type)}}
+  const fb=['fire','water','grass','electric','psychic','dragon','fairy','steel','fighting','rock'];
+  for(const f of fb){if(slots.length>=6)break;if(!used.has(f)){slots.push({type:f,label:TL(f),count:0});used.add(f)}}
+  const lists=await Promise.all(slots.map(s=>getTypePokemons(s.type)));
+  const usedN=new Set(),picks=[];
+  for(let i=0;i<slots.length;i++){const av=lists[i].filter(p=>!usedN.has(p.name));if(!av.length)continue;const pk=av[Math.floor(Math.random()*av.length)];usedN.add(pk.name);picks.push({name:pk.name,si:i})}
+  const details=await Promise.all(picks.map(p=>getPokemon(p.name).catch(()=>null)));
+  const team=[];
+  for(let i=0;i<picks.length;i++){const d=details[i];if(!d)continue;const s=slots[picks[i].si];team.push({...d,matchedType:s.type,matchedGenre:s.label,flavor:`${FLAVOR(i)} ${s.label} convocó a ${cap(d.name)}`})}
+  return team;
+}
+
+// ═══════════════════════════════════
+// FLIP CARDS
+// ═══════════════════════════════════
+function flipCard(wrap){
+  const inner=wrap.querySelector('.flip-inner');
+  if(inner.classList.contains('flipped'))return;
+  inner.classList.add('flipped');
+  const rect=wrap.getBoundingClientRect();
+  sparkle(rect.left+rect.width/2,rect.top+rect.height/2);
+}
+function revealAll(){document.querySelectorAll('.flip-wrap').forEach((w,i)=>setTimeout(()=>flipCard(w),i*130))}
+
+// ═══════════════════════════════════
+// BATTLE MODE
+// ═══════════════════════════════════
+function openBattle(historyId){
+  const history=getHistory();
+  const rival=history.find(e=>e.id===historyId);
+  if(!rival){alert('No se encontró ese equipo.');return}
+  _battleTeamB=rival;
+
+  // Render team A (current)
+  const pokeA=document.getElementById('battle-pokemons-a');
+  pokeA.innerHTML=_team.map(p=>`<div class="battle-poke"><img src="${p.sprite}" alt="${p.name}" onerror="this.src=''"><div class="battle-poke-name">${cap(p.name)}</div></div>`).join('');
+
+  // Render team B (rival from history)
+  const pokeB=document.getElementById('battle-pokemons-b');
+  document.getElementById('battle-team-b-label').textContent=`🔵 ${rival.date.toUpperCase()} ${rival.medal?rival.medal.emoji:''}`;
+  pokeB.innerHTML=rival.team.map(p=>`<div class="battle-poke"><img src="${p.sprite}" alt="${p.name}" onerror="this.src=''"><div class="battle-poke-name">${cap(p.name)}</div></div>`).join('');
+
+  document.getElementById('battle-result').className='battle-result-wrap';
+  document.getElementById('btn-fight').style.display='inline-flex';
+  showScreen('battle-screen');
+}
+
+function calcTeamPower(team){
+  // Sum of base stats we stored, with type diversity bonus
+  const types=new Set(team.flatMap(p=>p.types||[p.matchedType]));
+  const statSum=team.reduce((s,p)=>{
+    const stats=p.stats||{hp:50,atk:60,def:50,spd:60};
+    return s+stats.hp+stats.atk+stats.def+stats.spd;
+  },0);
+  return statSum + types.size * 15;
+}
+
+function runBattle(){
+  if(!_battleTeamB)return;
+  document.getElementById('btn-fight').style.display='none';
+
+  const powerA=calcTeamPower(_team);
+  const powerB=calcTeamPower(_battleTeamB.team);
+  const totalPower=powerA+powerB;
+  const pctA=Math.round((powerA/totalPower)*100);
+  const pctB=100-pctA;
+
+  // Add randomness (±15%)
+  const luck=(Math.random()*30)-15;
+  const finalPctA=Math.max(10,Math.min(90,pctA+luck));
+  const winner=finalPctA>50?'A':'B';
+  const margin=Math.abs(finalPctA-50);
+  const isClose=margin<10;
+
+  let emoji,title,desc;
+  if(winner==='A'){
+    emoji='🏆'; title=_lang==='es'?'¡Tu equipo ganó!':'Your team won!';
+    desc=isClose
+      ?(_lang==='es'?'Fue muy cerrado, pero tu música actual tiene la ventaja.':'It was close, but your current music has the edge.')
+      :(_lang==='es'?'¡Victoria contundente! Tu gusto musical actual es más poderoso.':'Decisive victory! Your current musical taste is more powerful.');
+  } else {
+    emoji='😤'; title=_lang==='es'?'¡El equipo rival ganó!':'Rival team won!';
+    desc=isClose
+      ?(_lang==='es'?'Batalla muy pareja. Tu pasado musical fue más fuerte por poco.':'Very close battle. Your past music was slightly stronger.')
+      :(_lang==='es'?'El equipo del historial fue más poderoso. ¡La nostalgia tiene poder!':'The history team was more powerful. Nostalgia is strong!');
+  }
+
+  const resultEl=document.getElementById('battle-result');
+  resultEl.innerHTML=`
+    <div class="battle-result-emoji">${emoji}</div>
+    <div class="battle-result-title">${title}</div>
+    <div class="battle-result-desc">${desc}</div>
+    <div class="battle-bars">
+      <div class="battle-bar-row">
+        <div class="battle-bar-label" style="color:#ef4444">${_lang==='es'?'Actual':'Current'}</div>
+        <div class="battle-bar-track"><div class="battle-bar-fill" style="width:0%;background:linear-gradient(90deg,#ef4444,#f59e0b)" data-target="${Math.round(finalPctA)}"></div></div>
+        <div class="battle-bar-val">${Math.round(finalPctA)}%</div>
+      </div>
+      <div class="battle-bar-row">
+        <div class="battle-bar-label" style="color:#3b82f6">${_lang==='es'?'Rival':'Rival'}</div>
+        <div class="battle-bar-track"><div class="battle-bar-fill" style="width:0%;background:linear-gradient(90deg,#3b82f6,#8b5cf6)" data-target="${Math.round(100-finalPctA)}"></div></div>
+        <div class="battle-bar-val">${Math.round(100-finalPctA)}%</div>
+      </div>
+    </div>`;
+  resultEl.classList.add('show');
+
+  // Animate bars
+  setTimeout(()=>{
+    resultEl.querySelectorAll('.battle-bar-fill').forEach(bar=>{
+      bar.style.width=bar.dataset.target+'%';
+    });
+  },100);
+
+  const cx=window.innerWidth/2,cy=window.innerHeight/2;
+  sparkle(cx,cy);
+}
+
+// ═══════════════════════════════════
+// SHARE AS IMAGE
+// ═══════════════════════════════════
+const SC_PB=`<svg class="sc-pokeball-logo" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#1a1a2e" stroke="#1DB954" stroke-width="2.5"/><path d="M50 2 A48 48 0 0 1 98 50 L2 50 A48 48 0 0 1 50 2Z" fill="#cc2200"/><path d="M50 98 A48 48 0 0 1 2 50 L98 50 A48 48 0 0 1 50 98Z" fill="#1a1a2e"/><line x1="2" y1="50" x2="98" y2="50" stroke="#1DB954" stroke-width="2.5"/><circle cx="50" cy="50" r="14" fill="#1a1a2e" stroke="#1DB954" stroke-width="2.5"/><circle cx="50" cy="50" r="7" fill="#fff" opacity=".9"/></svg>`;
+
+function scHeader(sub){
+  const badges=_genres.slice(0,4).map(g=>{const c=TC[g.type]||'#888';return`<span class="sc-badge" style="color:${c};background:${c}22;border-color:${c}55">${g.label}</span>`}).join('');
+  return`<div class="sc-top">${SC_PB}<div class="sc-app-name">Poké<span>Beats</span></div><div class="sc-subtitle">${sub}</div>${_user?.display_name?`<div class="sc-user">${_user.display_name}</div>`:''} ${_medal?`<div class="sc-medal">${_medal.emoji} ${medalName(_medal)}</div>`:''}<div class="sc-badges">${badges}</div></div>`;
+}
+
+function buildTeamCardHtml(){
+  const grid=_team.map(p=>{const tc=TC[p.matchedType]||'#888';const tb=p.types.map(t=>`<span class="sc-type-badge" style="background:${TC[t]||'#888'}">${TL(t)}</span>`).join('');return`<div class="sc-poke" style="border-color:${tc}55;box-shadow:0 0 40px ${tc}22"><img src="${p.sprite}" crossorigin="anonymous" style="width:180px;height:180px;object-fit:contain"><div class="sc-poke-name">${cap(p.name)}</div><div class="sc-poke-types">${tb}</div></div>`}).join('');
+  const sub=_lang==='es'?'Tu equipo Pokémon de este mes':'Your Pokémon team this month';
+  return`${scHeader(sub)}<div class="sc-grid-wrap"><div class="sc-grid">${grid}</div></div><div class="sc-footer-wrap"><div class="sc-hashtag">#PokéBeats</div><div class="sc-attr">Powered by Spotify API + PokéAPI</div></div>`;
+}
+
+function buildSongsCardHtml(){
+  let rows='';
+  (_topTracks||[]).slice(0,10).forEach((tr,i)=>{const art=tr.artists&&tr.artists[0]?tr.artists[0]:null;rows+=`<div class="sc-song-row"><div class="sc-song-num">${i+1}</div><div class="sc-song-info"><div class="sc-song-name">${tr.name}</div><div class="sc-song-artist">${art?art.name:''}</div></div></div>`});
+  const sub=_lang==='es'?'Mis 10 canciones del mes':'My top 10 songs this month';
+  return`${scHeader(sub)}<div class="sc-songs" style="width:100%;position:relative;z-index:1"><div class="sc-songs-title">🎵 Top 10</div>${rows}</div><div class="sc-footer-wrap"><div class="sc-hashtag">#PokéBeats</div><div class="sc-attr">Powered by Spotify API + PokéAPI</div></div>`;
+}
+
+async function renderCardToBlob(html){
+  const card=document.getElementById('share-card-render');
+  const isDark=_theme==='dark';
+  card.className=isDark?'sc-dark':'sc-light';
+  card.innerHTML=html;
+  await Promise.all([...card.querySelectorAll('img')].map(img=>new Promise(r=>{if(img.complete)r();else{img.onload=r;img.onerror=r}})));
+  const bgColor=isDark?'#0d1117':'#f0f4f8';
+  const canvas=await html2canvas(card,{backgroundColor:bgColor,scale:1,width:1080,height:1920,useCORS:true,logging:false,windowWidth:1080,windowHeight:1920});
+  return{blob:await new Promise(r=>canvas.toBlob(b=>r(b),'image/png')),dataUrl:canvas.toDataURL()};
+}
+
+async function openShareModal(){
+  document.getElementById('share-modal-bg').classList.add('open');
+  _activeTab='team';
+  document.getElementById('tab-team').classList.add('active');
+  document.getElementById('tab-songs').classList.remove('active');
+  await renderTab('team');
+}
+
+async function switchTab(tab){
+  if(_activeTab===tab)return;
+  _activeTab=tab;
+  document.getElementById('tab-team').classList.toggle('active',tab==='team');
+  document.getElementById('tab-songs').classList.toggle('active',tab==='songs');
+  await renderTab(tab);
+}
+
+async function renderTab(tab){
+  const preview=document.getElementById('share-preview-img');
+  preview.innerHTML=`<div style="padding:24px;text-align:center;color:var(--text3);font-size:12px">${t('generating')}</div>`;
+  try{
+    if(tab==='team'){
+      if(!_blobTeam){const r=await renderCardToBlob(buildTeamCardHtml());_blobTeam=r}
+      preview.innerHTML=`<img src="${_blobTeam.dataUrl}" style="width:100%;border-radius:10px;aspect-ratio:9/16;object-fit:cover">`;
+    }else{
+      if(!_blobSongs){const r=await renderCardToBlob(buildSongsCardHtml());_blobSongs=r}
+      preview.innerHTML=`<img src="${_blobSongs.dataUrl}" style="width:100%;border-radius:10px;aspect-ratio:9/16;object-fit:cover">`;
+    }
+  }catch(e){preview.innerHTML='<div style="padding:16px;color:var(--text2);text-align:center;font-size:12px">Vista previa no disponible</div>'}
+}
+
+function closeShareModal(e){if(!e||e.target===document.getElementById('share-modal-bg'))document.getElementById('share-modal-bg').classList.remove('open')}
+
+async function shareToApp(platform){
+  const text=`🎵 ${_lang==='es'?'Mi equipo PokéBeats este mes':'My PokéBeats team this month'}:\n${_team.map((p,i)=>`${i+1}. ${cap(p.name)} (${p.matchedGenre})`).join('\n')}\n\n#PokéBeats ⚡`;
+  if(platform==='instagram'){await downloadCurrentImage();await navigator.clipboard?.writeText(text).catch(()=>{});alert(_lang==='es'?'📸 Imagen guardada + texto copiado.':'📸 Image saved + text copied.');return}
+  const urls={whatsapp:`https://wa.me/?text=${encodeURIComponent(text)}`,twitter:`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`};
+  if(urls[platform])window.open(urls[platform],'_blank');
+}
+
+async function downloadCurrentImage(){
+  const blob=_activeTab==='team'?_blobTeam?.blob:_blobSongs?.blob;
+  if(!blob)return;
+  const fname=_activeTab==='team'?'mi-equipo-pokebeats.png':'mis-canciones-pokebeats.png';
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=fname;a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),5000);
+}
+
+// ═══════════════════════════════════
+// RENDER RESULTS
+// ═══════════════════════════════════
+function renderResults(){
+  const c=document.getElementById('results-inner');
+  const badges=_genres.slice(0,4).map(g=>{const col=TC[g.type]||'#888';return`<span class="badge" style="color:${col};background:${col}22;border-color:${col}55">${g.label}</span>`}).join('');
+
+  const cards=_team.map((p,i)=>{
+    const tc=TC[p.matchedType]||'#888';
+    const tb=p.types.map(tp=>`<span class="type-badge" style="background:${TC[tp]||'#888'}">${TL(tp)}</span>`).join('');
+    return`<div class="flip-wrap" onclick="flipCard(this)">
+      <div class="flip-inner">
+        <div class="flip-f">${POKEBALL_SVG}<div class="reveal-hint">${_lang==='es'?'REVELAR':'REVEAL'}</div></div>
+        <div class="flip-b" style="border-color:${tc}55;box-shadow:0 0 16px ${tc}2a">
+          <div class="poke-art-bg" style="background:${tc}18;height:52%">
+            <img src="${p.sprite}" alt="${p.name}" loading="lazy" style="width:80%;height:80%;object-fit:contain">
+          </div>
+          <div class="poke-name">${cap(p.name)}</div>
+          <div class="poke-types">${tb}</div>
+          <div class="poke-flavor">${p.flavor}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  let songHtml='';
+  if(_topTracks&&_topTracks.length>0){
+    _topTracks.slice(0,10).forEach((track,i)=>{
+      const art=track.artists&&track.artists[0]?track.artists[0]:null;
+      songHtml+=`<div class="song-row"><div class="song-num">${i+1}</div><div class="song-info"><div class="song-name">${track.name}</div><div class="song-artist">${art?art.name:''}</div></div></div>`;
+    });
+  }
+  if(!songHtml)songHtml=`<div style="text-align:center;color:var(--text3);font-size:13px;padding:8px">${_lang==='es'?'No se encontraron canciones este mes':'No songs found this month'}</div>`;
+
+  const historyHtml=renderHistorySection();
+
+  const battleHistory=getHistory();
+  const hasBattleTarget=battleHistory.length>1;
+
+  c.innerHTML=`
+    <div class="res-header">
+      <div class="zap-icon">⚡</div>
+      <div class="res-title">${_lang==='es'?'Tu forma de vibrar con la música ha capturado a tu equipo perfecto para las batallas Pokémon':'Your musical vibe has captured your perfect Pokémon battle team'}</div>
+      ${_user?.display_name?`<div class="res-username">${_user.display_name}</div>`:''}
+      ${_medal?`<div class="medal-mini-badge">${_medal.emoji} ${medalName(_medal)}</div>`:''}
+      <div class="badges">${badges}</div>
+    </div>
+
+    <button class="btn-reveal-all" onclick="revealAll()">${t('revealAll')}</button>
+    <div class="team-grid">${cards}</div>
+
+    <div class="dna-section">
+      <div class="dna-title">${t('top10')}</div>
+      ${songHtml}
+    </div>
+
+    ${historyHtml}
+
+    <div class="actions">
+      <button class="btn-share-main" onclick="openShareModal()">${t('shareImg')}</button>
+      ${hasBattleTarget?`<button class="btn-battle-open" onclick="openBattle(${battleHistory[1].id})">${t('battleBtn')}</button>`:''}
+      <button class="btn-regen" onclick="regenTeam()">${t('newTeam')}</button>
+      <button class="btn-reset" onclick="reset()">${t('changeAccount')}</button>
+    </div>
+
+    <div class="kofi-section">
+      <div class="kofi-emoji">☕</div>
+      <div class="kofi-title">${t('support')}</div>
+      <div class="kofi-desc">${t('supportDesc')}</div>
+      <a class="btn-kofi" href="https://ko-fi.com/elkingsalvatore" target="_blank" rel="noopener">${t('supportBtn')}</a>
+    </div>
+
+    <div class="res-footer">
+      <div class="hashtag">#PokéBeats</div>
+      <div class="res-attr">Datos de Spotify API · Pokémon de PokéAPI</div>
+    </div>`;
+
+  showScreen('results');
+}
+
+// ═══════════════════════════════════
+// REGEN
+// ═══════════════════════════════════
+async function regenTeam(){
+  const tk=localStorage.getItem('sp_tk');if(!tk){showLanding();return}
+  showScreen('loading');
+  document.getElementById('loading-msg').textContent=_lang==='es'?'Generando nuevo equipo...':'Generating new team...';
+  try{_team=await buildTeam(_genres);_blobTeam=null;_blobSongs=null;saveToHistory();renderResults()}
+  catch(e){document.getElementById('error-msg').textContent=e.message;showScreen('error')}
+}
+
+function reset(){localStorage.removeItem('sp_tk');showLanding()}
+
+// ═══════════════════════════════════
+// MAIN
+// ═══════════════════════════════════
+async function main(){
+  applyTheme();applyLang();
+
+  const p=new URLSearchParams(window.location.search);
+  const code=p.get('code'),err=p.get('error');
+  if(code||err)window.history.replaceState({},'',window.location.pathname);
+  if(err){document.getElementById('error-msg').textContent=_lang==='es'?'Autenticación cancelada.':'Authentication cancelled.';document.getElementById('error-hint').textContent='';showScreen('error');return}
+
+  // If no Client ID yet, go straight to setup
+  if(!getClientId()){showLanding();return}
+
+  let tk=localStorage.getItem('sp_tk');
+  if(code&&!tk){
+    showScreen('loading');
+    document.getElementById('loading-msg').textContent=_lang==='es'?'Conectando con Spotify...':'Connecting to Spotify...';
+    try{tk=await exchangeCode(code)}catch(e){document.getElementById('error-msg').textContent=e.message;document.getElementById('error-hint').textContent='';showScreen('error');return}
+  }
+  if(!tk){showLanding();return}
+
+  showScreen('loading');
+  try{
+    document.getElementById('loading-msg').textContent=t('analyzing');
+    const[user,artists,tracksShort]=await Promise.all([
+      spGet('/me',tk),
+      spGet('/me/top/artists?time_range=short_term&limit=50',tk),
+      spGet('/me/top/tracks?time_range=short_term&limit=10',tk)
+    ]);
+
+    let trackItems=tracksShort.items||[];
+    if(!trackItems.length){const tm=await spGet('/me/top/tracks?time_range=medium_term&limit=10',tk);trackItems=tm.items||[]}
+    if(!trackItems.length){const tl=await spGet('/me/top/tracks?time_range=long_term&limit=10',tk);trackItems=tl.items||[]}
+
+    let genres=analyzeGenres(artists.items);
+    if(!genres.length){const fb=await spGet('/me/top/artists?time_range=medium_term&limit=50',tk);genres=analyzeGenres(fb.items)}
+
+    const artistMap=buildArtistTypeMap(artists.items);
+    try{
+      const am=await spGet('/me/top/artists?time_range=medium_term&limit=50',tk);
+      buildArtistTypeMap(am.items||[]).forEach((v,k)=>{if(!artistMap.has(k))artistMap.set(k,v)});
+    }catch(e){}
+
+    const team=await buildTeam(genres);
+    _user=user;_genres=genres;_team=team;_topTracks=trackItems;_artistGenreMap=artistMap;
+
+    showMedalScreen(getMedal(genres));
+  }catch(e){
+    if(e.message.includes('Token expired')){localStorage.removeItem('sp_tk');showLanding();}
+    else{
+      document.getElementById('error-msg').textContent=e.message;
+      const hint=document.getElementById('error-hint');
+      if(e.message.includes('autorizada')||e.message.includes('authorized')||e.message.includes('Redirect')){
+        hint.innerHTML=_lang==='es'
+          ?'💡 Verificá que el <strong>Redirect URI</strong> en tu app de Spotify sea exactamente: <code style="font-size:10px;word-break:break-all">'+REDIRECT_URI+'</code>'
+          :'💡 Make sure the <strong>Redirect URI</strong> in your Spotify app is exactly: <code style="font-size:10px;word-break:break-all">'+REDIRECT_URI+'</code>';
+      } else {
+        hint.textContent='';
+      }
+      showScreen('error');
+    }
+  }
+}
+
+main();
+</script>
+</body>
+</html>
