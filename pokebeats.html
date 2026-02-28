@@ -125,6 +125,58 @@ body::after{content:'';position:fixed;bottom:-200px;right:-200px;width:600px;hei
 .btn-reveal-all{width:100%;padding:10px;background:linear-gradient(90deg,rgba(255,215,0,.1),rgba(255,215,0,.04));border:1px dashed rgba(255,215,0,.25);border-radius:12px;color:var(--yellow);font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;cursor:pointer;margin-bottom:16px;letter-spacing:1px;transition:background .2s}
 .btn-reveal-all:hover{background:linear-gradient(90deg,rgba(255,215,0,.2),rgba(255,215,0,.08))}
 
+/* ═══ POKEBALL OPENING ANIMATION ═══ */
+.pokeball-anim-overlay{position:fixed;inset:0;z-index:5000;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.92);pointer-events:none}
+.pokeball-anim-overlay.show{display:flex;pointer-events:all}
+.pb-anim-wrap{position:relative;width:180px;height:180px}
+.pb-top{position:absolute;top:0;left:0;width:180px;height:90px;overflow:hidden;transform:translateY(0);transition:transform 1.2s cubic-bezier(.4,0,.2,1)}
+.pb-bottom{position:absolute;bottom:0;left:0;width:180px;height:90px;overflow:hidden;transform:translateY(0);transition:transform 1.2s cubic-bezier(.4,0,.2,1)}
+.pb-anim-overlay.opening .pb-top{transform:translateY(-90px)}
+.pb-anim-overlay.opening .pb-bottom{transform:translateY(90px)}
+.pb-flash{position:absolute;inset:-20px;background:radial-gradient(circle,rgba(255,255,255,.9) 0%,rgba(255,255,255,0) 70%);opacity:0;border-radius:50%;pointer-events:none;transition:opacity .3s}
+.pb-flash.on{opacity:1}
+.pb-anim-text{font-size:15px;font-weight:800;color:rgba(255,255,255,.8);margin-top:32px;letter-spacing:3px;text-transform:uppercase;opacity:0;transform:translateY(10px);transition:opacity .6s,transform .6s}
+.pb-anim-text.show{opacity:1;transform:translateY(0)}
+
+/* ═══ DESTINY CARD ═══ */
+.destiny-card-overlay{position:fixed;inset:0;z-index:5500;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.88);pointer-events:none}
+.destiny-card-overlay.show{display:flex;pointer-events:all}
+.destiny-card{background:linear-gradient(145deg,#0f1923,#0a1628,#12082a);border:2px solid rgba(255,215,0,.4);border-radius:24px;padding:28px 24px;width:100%;max-width:360px;text-align:center;box-shadow:0 0 60px rgba(255,215,0,.15),0 0 120px rgba(29,185,84,.08);transform:scale(.85) translateY(20px);transition:transform .5s cubic-bezier(.34,1.56,.64,1),opacity .5s;opacity:0;position:relative;overflow:hidden}
+.destiny-card-overlay.show .destiny-card{transform:scale(1) translateY(0);opacity:1}
+.destiny-card::before{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.03) 50%,transparent 60%);background-size:200% 200%;animation:shimmer 3s linear infinite;pointer-events:none}
+.dc-stars{font-size:22px;letter-spacing:4px;margin-bottom:14px}
+.dc-title{font-size:12px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:rgba(255,215,0,.6);margin-bottom:16px}
+.dc-medal{font-size:44px;margin-bottom:8px;filter:drop-shadow(0 0 20px rgba(255,215,0,.6))}
+.dc-medal-name{font-size:16px;font-weight:900;background:linear-gradient(135deg,#FFD700,#fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:20px}
+.dc-divider{width:40px;height:2px;background:linear-gradient(90deg,transparent,rgba(255,215,0,.5),transparent);margin:0 auto 20px}
+.dc-desc{font-size:14px;color:rgba(255,255,255,.8);line-height:1.8;font-style:italic;margin-bottom:20px}
+.dc-genres{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-bottom:20px}
+.dc-genre-tag{font-size:10px;font-weight:800;color:#fff;padding:4px 10px;border-radius:20px;letter-spacing:.5px}
+.dc-pokemon-row{display:flex;justify-content:center;gap:4px;margin-bottom:22px;flex-wrap:wrap}
+.dc-poke-mini{width:44px;height:44px;object-fit:contain;filter:drop-shadow(0 0 6px rgba(255,255,255,.2))}
+.dc-footer{font-size:10px;color:rgba(255,215,0,.4);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px}
+.btn-dc-close{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(90deg,rgba(255,215,0,.15),rgba(255,215,0,.08));border:1px solid rgba(255,215,0,.3);border-radius:50px;color:var(--yellow);font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer;padding:11px 24px;transition:all .2s;margin-top:4px}
+.btn-dc-close:hover{background:linear-gradient(90deg,rgba(255,215,0,.25),rgba(255,215,0,.15));transform:scale(1.04)}
+/* destiny card tabs */
+.dc-tabs{display:flex;gap:6px;margin-bottom:16px;width:100%}
+.dc-tab{flex:1;padding:7px 4px;border-radius:10px;border:1.5px solid rgba(255,215,0,.2);background:none;color:rgba(255,255,255,.4);font-family:'Nunito',sans-serif;font-size:11px;font-weight:800;cursor:pointer;transition:all .2s}
+.dc-tab.active{background:rgba(255,215,0,.12);border-color:rgba(255,215,0,.5);color:var(--yellow)}
+.dc-panel{width:100%}
+.dc-panel-title{font-size:14px;font-weight:800;color:rgba(255,255,255,.7);letter-spacing:1px;margin-bottom:16px}
+.dc-why-desc{font-size:13px;color:rgba(255,255,255,.8);line-height:1.8;font-style:italic;margin-bottom:16px;text-align:center}
+.dc-songs-list{width:100%;margin-bottom:12px}
+.dc-song-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:10px;background:rgba(255,255,255,.04);margin-bottom:5px}
+.dc-song-num{font-size:10px;font-weight:800;color:rgba(255,215,0,.4);min-width:16px}
+.dc-song-info{flex:1;min-width:0}
+.dc-song-name{font-size:11px;font-weight:800;color:rgba(255,255,255,.85);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dc-song-artist{font-size:9px;color:rgba(255,255,255,.4)}
+.dc-share-row{display:flex;gap:8px;justify-content:center;margin-bottom:14px;flex-wrap:wrap}
+.btn-dc-share{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:50px;border:none;font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;cursor:pointer;transition:transform .15s}
+.btn-dc-share:hover{transform:scale(1.05)}
+.btn-dc-share.dl{background:linear-gradient(90deg,#1DB954,#17a34a);color:#fff}
+.btn-dc-share.wa{background:#25D366;color:#fff}
+.btn-dc-share.tw{background:#1DA1F2;color:#fff}
+
 /* ── SONGS ── */
 .dna-section{background:var(--bg-mid);border-radius:18px;padding:16px;margin-bottom:18px;border:1px solid var(--border)}
 .dna-title{font-size:16px;font-weight:800;text-align:center;margin-bottom:14px}
@@ -198,6 +250,12 @@ body::after{content:'';position:fixed;bottom:-200px;right:-200px;width:600px;hei
 .share-btn.instagram{background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);color:#fff}
 .share-btn.dl{background:var(--green);color:#fff}
 .btn-close-modal{width:100%;padding:10px;background:none;border:1px solid var(--border);border-radius:10px;color:var(--text2);font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer}
+/* ── IMAGE THEME TOGGLE ── */
+.img-theme-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:14px}
+.img-theme-label{font-size:11px;font-weight:800;color:var(--text3);letter-spacing:.5px;text-transform:uppercase}
+.img-theme-toggle{display:flex;background:var(--bg);border-radius:50px;padding:3px;border:1px solid var(--border);gap:2px}
+.img-theme-opt{padding:5px 14px;border-radius:50px;border:none;font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;cursor:pointer;transition:all .2s;color:var(--text2);background:none}
+.img-theme-opt.active{background:var(--bg-mid);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.2)}
 
 /* ── ACTIONS ── */
 .actions{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:22px}
@@ -208,27 +266,7 @@ body::after{content:'';position:fixed;bottom:-200px;right:-200px;width:600px;hei
 .btn-battle-open{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(90deg,rgba(239,68,68,.2),rgba(245,158,11,.2));border:1px solid rgba(239,68,68,.35);color:#f87171;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;border-radius:50px;cursor:pointer;padding:10px 22px;transition:transform .15s}
 .btn-battle-open:hover{transform:scale(1.04)}
 .btn-reset{background:none;border:none;color:var(--text3);font-family:'Nunito',sans-serif;font-size:12px;font-weight:600;cursor:pointer;padding:6px}
-/* ── CLIENT ID SETUP ── */
-.setup-box{background:var(--bg-mid);border:1px solid var(--border);border-radius:20px;padding:24px;width:100%;max-width:340px;margin-top:20px;text-align:left}
-.setup-box-title{font-size:13px;font-weight:800;color:var(--text2);letter-spacing:.5px;text-transform:uppercase;margin-bottom:14px;text-align:center}
-.setup-step{display:flex;gap:10px;align-items:flex-start;margin-bottom:12px}
-.setup-step-num{width:22px;height:22px;border-radius:50%;background:var(--green);color:#000;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
-.setup-step-text{font-size:12px;color:var(--text2);line-height:1.5}
-.setup-step-text a{color:var(--green);text-decoration:none;font-weight:700}
-.setup-step-text a:hover{text-decoration:underline}
-.setup-input-wrap{margin-top:16px;position:relative}
-.setup-input{width:100%;padding:13px 16px;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;color:var(--text);font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;outline:none;transition:border-color .2s}
-.setup-input:focus{border-color:var(--green)}
-.setup-input::placeholder{color:var(--text3);font-weight:600}
-.setup-input-label{font-size:11px;font-weight:800;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;display:block}
-.setup-error{font-size:11px;color:#f87171;margin-top:8px;display:none;font-weight:700}
-.setup-error.show{display:block}
-.btn-setup-save{width:100%;margin-top:12px;padding:13px;background:linear-gradient(90deg,var(--green),var(--green2));color:#000;font-family:'Nunito',sans-serif;font-size:14px;font-weight:900;border:none;border-radius:50px;cursor:pointer;transition:transform .15s;box-shadow:0 0 20px var(--shadow-green)}
-.btn-setup-save:hover{transform:scale(1.02)}
-.saved-id-wrap{background:rgba(29,185,84,.08);border:1px solid rgba(29,185,84,.2);border-radius:12px;padding:10px 14px;margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
-.saved-id-text{font-size:11px;color:var(--green);font-weight:700;font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.btn-change-id{font-size:10px;font-weight:800;color:var(--text3);background:none;border:none;cursor:pointer;padding:4px;white-space:nowrap;font-family:'Nunito',sans-serif}
-.btn-change-id:hover{color:var(--text2)}
+.btn-reset:hover{color:var(--text2)}
 
 /* ── KO-FI SUPPORT ── */
 .kofi-section{background:linear-gradient(135deg,rgba(255,94,91,.1),rgba(255,153,51,.08));border:1px solid rgba(255,94,91,.25);border-radius:18px;padding:20px;margin-bottom:18px;text-align:center}
@@ -307,6 +345,56 @@ body::after{content:'';position:fixed;bottom:-200px;right:-200px;width:600px;hei
 <div class="sparkles-overlay" id="sparkles-overlay"></div>
 <div id="share-card-render"></div>
 
+<!-- POKEBALL OPENING ANIMATION -->
+<div class="pokeball-anim-overlay" id="pokeball-anim-overlay">
+  <div class="pb-anim-wrap" id="pb-anim-wrap"></div>
+  <div class="pb-anim-text" id="pb-anim-text"></div>
+</div>
+
+<!-- DESTINY CARD -->
+<div class="destiny-card-overlay" id="destiny-card-overlay">
+  <div class="destiny-card" id="destiny-card">
+    <!-- Tabs -->
+    <div class="dc-tabs">
+      <button class="dc-tab active" id="dct-team" onclick="switchDcTab('team')">⚡ <span id="dct-team-lbl">Equipo</span></button>
+      <button class="dc-tab" id="dct-why" onclick="switchDcTab('why')">🎵 <span id="dct-why-lbl">Por qué</span></button>
+      <button class="dc-tab" id="dct-destiny" onclick="switchDcTab('destiny')">🔮 <span id="dct-dest-lbl">Destino</span></button>
+    </div>
+
+    <!-- Panel: Equipo -->
+    <div class="dc-panel" id="dc-panel-team">
+      <div class="dc-stars">✦ ✦ ✦</div>
+      <div class="dc-medal" id="dc-medal-emoji"></div>
+      <div class="dc-medal-name" id="dc-medal-name"></div>
+      <div class="dc-divider"></div>
+      <div class="dc-pokemon-row" id="dc-pokemon-row"></div>
+      <div class="dc-genres" id="dc-genres"></div>
+      <div class="dc-footer">#PokéBeats</div>
+    </div>
+
+    <!-- Panel: Por qué -->
+    <div class="dc-panel" id="dc-panel-why" style="display:none">
+      <div class="dc-stars">🎵 🎶 🎵</div>
+      <div class="dc-panel-title" id="dc-why-title">¿Por qué este equipo?</div>
+      <div class="dc-divider"></div>
+      <div class="dc-why-desc" id="dc-why-desc"></div>
+      <div class="dc-songs-list" id="dc-songs-list"></div>
+      <div class="dc-footer">#PokéBeats</div>
+    </div>
+
+    <!-- Panel: Destino -->
+    <div class="dc-panel" id="dc-panel-destiny" style="display:none">
+      <div class="dc-stars">✦ ✦ ✦</div>
+      <div class="dc-title" id="dc-destiny-title">Tu destino musical</div>
+      <div class="dc-divider"></div>
+      <div class="dc-desc" id="dc-desc"></div>
+      <div class="dc-footer">#PokéBeats</div>
+    </div>
+
+    <button class="btn-dc-close" onclick="closeDestinyCard()" id="btn-dc-close">⚡ Ver mi equipo</button>
+  </div>
+</div>
+
 <!-- TOP BAR -->
 <div class="topbar">
   <button class="topbar-btn lang-btn" onclick="toggleLang()" id="lang-btn">🌐 EN</button>
@@ -320,6 +408,14 @@ body::after{content:'';position:fixed;bottom:-200px;right:-200px;width:600px;hei
     <div class="modal-tabs">
       <button class="modal-tab active" id="tab-team" onclick="switchTab('team')">⚡ <span data-i18n="myTeam">Mi equipo</span></button>
       <button class="modal-tab" id="tab-songs" onclick="switchTab('songs')">🎵 Top 10</button>
+      <button class="modal-tab" id="tab-destiny" onclick="switchTab('destiny')">🔮 Destino</button>
+    </div>
+    <div class="img-theme-row" id="img-theme-row">
+      <span class="img-theme-label">Imagen:</span>
+      <div class="img-theme-toggle">
+        <button class="img-theme-opt active" id="img-theme-dark" onclick="setImgTheme('dark')">🌙 Oscura</button>
+        <button class="img-theme-opt" id="img-theme-light" onclick="setImgTheme('light')">☀️ Clara</button>
+      </div>
     </div>
     <div class="share-preview" id="share-preview-img">
       <div style="padding:20px;text-align:center;color:var(--text3);font-size:12px" data-i18n="generating">Generando...</div>
@@ -349,45 +445,12 @@ body::after{content:'';position:fixed;bottom:-200px;right:-200px;width:600px;hei
   <h1 class="title">Poké<span>Beats</span></h1>
   <p class="tagline" data-i18n="tagline">Descubre el equipo Pokémon que tu música ha elegido para ti</p>
   <div class="divider"></div>
-
-  <!-- State A: no Client ID saved yet -->
-  <div id="setup-panel">
-    <div class="setup-box">
-      <div class="setup-box-title" data-i18n="setupTitle">⚙️ Configuración rápida (1 vez)</div>
-      <div class="setup-step">
-        <div class="setup-step-num">1</div>
-        <div class="setup-step-text" data-i18n="setupStep1">Entrá a <a href="https://developer.spotify.com/dashboard" target="_blank" rel="noopener">developer.spotify.com/dashboard</a> e iniciá sesión con tu cuenta de Spotify</div>
-      </div>
-      <div class="setup-step">
-        <div class="setup-step-num">2</div>
-        <div class="setup-step-text" data-i18n="setupStep2">Hacé clic en <strong>"Create app"</strong>. Nombre: PokéBeats. Redirect URI: <strong id="redirect-uri-hint"></strong></div>
-      </div>
-      <div class="setup-step">
-        <div class="setup-step-num">3</div>
-        <div class="setup-step-text" data-i18n="setupStep3">Copiá tu <strong>Client ID</strong> y pegalo acá abajo</div>
-      </div>
-      <div class="setup-input-wrap">
-        <label class="setup-input-label" for="client-id-input" data-i18n="clientIdLabel">Tu Client ID</label>
-        <input class="setup-input" id="client-id-input" type="text" placeholder="ej: ee6b358b259b4b849f66..." autocomplete="off" autocorrect="off" spellcheck="false"/>
-        <div class="setup-error" id="setup-error" data-i18n="setupError">El Client ID debe tener 32 caracteres</div>
-      </div>
-      <button class="btn-setup-save" onclick="saveClientId()" data-i18n="setupSave">Guardar y continuar →</button>
-    </div>
-  </div>
-
-  <!-- State B: Client ID already saved -->
-  <div id="ready-panel" style="display:none;width:100%;max-width:340px;text-align:center">
-    <div class="saved-id-wrap">
-      <span class="saved-id-text" id="saved-id-display"></span>
-      <button class="btn-change-id" onclick="clearClientId()">✏️ <span data-i18n="change">Cambiar</span></button>
-    </div>
-    <button class="btn-spotify" style="margin-top:20px;width:100%;justify-content:center" onclick="startAuth()">
-      <svg viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
-      <span data-i18n="connectSpotify">Conectar con Spotify</span>
-    </button>
-  </div>
-
-  <p class="attribution">Powered by Spotify API + PokéAPI · <a href="https://github.com/elkingsalvatore/pokebeats" target="_blank" style="color:var(--green);text-decoration:none">GitHub</a></p>
+  <p class="desc" data-i18n="desc">Conecta tu cuenta de Spotify y descubre qué Pokémon representan tus gustos musicales de este mes</p>
+  <button class="btn-spotify" onclick="startAuth()">
+    <svg viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+    <span data-i18n="connectSpotify">Conectar con Spotify</span>
+  </button>
+  <p class="attribution">Powered by Spotify API + PokéAPI</p>
 </div>
 
 <!-- LOADING -->
@@ -466,18 +529,17 @@ body::after{content:'';position:fixed;bottom:-200px;right:-200px;width:600px;hei
   <h2 data-i18n="errorTitle">Algo salió mal</h2>
   <p id="error-msg"></p>
   <p id="error-hint" style="font-size:12px;color:var(--text3);max-width:300px;line-height:1.6;margin-top:8px"></p>
-  <button class="btn-spotify" onclick="showLanding()" data-i18n="back">Volver al inicio</button>
+  <button class="btn-spotify" onclick="showScreen('landing');localStorage.removeItem('sp_tk')" data-i18n="back">Volver al inicio</button>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
 // ═══════════════════════════════════
-// CONFIG — dynamic Client ID
+// CONFIG
 // ═══════════════════════════════════
-const CLIENT_ID_KEY='pb_client_id';
+const CLIENT_ID='ee6b358b259b4b849f66c397eb935dc3';
 const REDIRECT_URI=window.location.origin+window.location.pathname;
 const SCOPES='user-top-read';
-function getClientId(){return localStorage.getItem(CLIENT_ID_KEY)||''}
 
 // ═══════════════════════════════════
 // I18N
@@ -514,14 +576,10 @@ const LANGS={
     supportDesc:'¿Te gustó? Podés invitarme un café para seguir mejorando la app 💜',
     supportBtn:'☕ Apoyar en Ko-fi',
     rivalTeam:'🔵 EQUIPO RIVAL',
-    setupTitle:'⚙️ Configuración rápida (1 vez)',
-    setupStep1:'Entrá a <a href="https://developer.spotify.com/dashboard" target="_blank" rel="noopener">developer.spotify.com/dashboard</a> e iniciá sesión con tu cuenta de Spotify',
-    setupStep2:'Hacé clic en <strong>"Create app"</strong>. Usá cualquier nombre. En Redirect URI pegá esta URL exacta:',
-    setupStep3:'Copiá tu <strong>Client ID</strong> y pegalo acá abajo',
-    clientIdLabel:'Tu Client ID de Spotify',
-    setupError:'El Client ID debe tener 32 caracteres alfanuméricos',
-    setupSave:'Guardar y continuar →',
-    change:'Cambiar',
+    destinyTitle:'Tu destino musical',
+    destinyBtn:'⚡ Ver mi equipo',
+    destinyReveal:'✨ Destino revelado ✨',
+    dcSave:'Guardar imagen'
   },
   en:{
     tagline:'Discover the Pokémon team your music has chosen for you',
@@ -554,14 +612,10 @@ const LANGS={
     supportDesc:'Enjoying it? Buy me a coffee to keep improving the app 💜',
     supportBtn:'☕ Support on Ko-fi',
     rivalTeam:'🔵 RIVAL TEAM',
-    setupTitle:'⚙️ Quick setup (one time)',
-    setupStep1:'Go to <a href="https://developer.spotify.com/dashboard" target="_blank" rel="noopener">developer.spotify.com/dashboard</a> and log in with your Spotify account',
-    setupStep2:'Click <strong>"Create app"</strong>. Use any name. In Redirect URI paste this exact URL:',
-    setupStep3:'Copy your <strong>Client ID</strong> and paste it below',
-    clientIdLabel:'Your Spotify Client ID',
-    setupError:'Client ID must be 32 alphanumeric characters',
-    setupSave:'Save and continue →',
-    change:'Change',
+    destinyTitle:'Your musical destiny',
+    destinyBtn:'⚡ See my team',
+    destinyReveal:'✨ Destiny revealed ✨',
+    dcSave:'Save image'
   }
 };
 let _lang=localStorage.getItem('pb_lang')||'es';
@@ -571,16 +625,10 @@ function t(key){return LANGS[_lang][key]||LANGS['es'][key]||key}
 function applyLang(){
   document.querySelectorAll('[data-i18n]').forEach(el=>{
     const key=el.dataset.i18n;
-    const val=t(key);
-    // steps 1-3 contain HTML links/bold — use innerHTML
-    if(key==='setupStep1'||key==='setupStep2'||key==='setupStep3') el.innerHTML=val;
-    else el.textContent=val;
+    el.textContent=t(key);
   });
   document.getElementById('lang-btn').textContent=_lang==='es'?'🌐 EN':'🌐 ES';
   document.documentElement.lang=_lang;
-  // update redirect URI hint
-  const hint=document.getElementById('redirect-uri-hint');
-  if(hint) hint.textContent=REDIRECT_URI;
 }
 
 function toggleLang(){
@@ -609,7 +657,8 @@ function toggleTheme(){
 // ═══════════════════════════════════
 let _user=null,_genres=null,_team=null,_medal=null,_topTracks=null,_artistGenreMap=null;
 let _medalRevealed=false;
-let _blobTeam=null,_blobSongs=null,_activeTab='team';
+let _blobTeam=null,_blobSongs=null,_blobDestiny=null,_activeTab='team';
+let _imgTheme='dark'; // independent from app theme
 let _battleTeamB=null;
 
 // ═══════════════════════════════════
@@ -776,67 +825,18 @@ function revealMedal(){
 function goToResults(){saveToHistory();renderResults()}
 
 // ═══════════════════════════════════
-// CLIENT ID MANAGEMENT
-// ═══════════════════════════════════
-function showLanding(){
-  showScreen('landing');
-  const cid=getClientId();
-  if(cid){
-    document.getElementById('setup-panel').style.display='none';
-    document.getElementById('ready-panel').style.display='block';
-    const masked=cid.slice(0,8)+'••••••••••••••••'+cid.slice(-6);
-    document.getElementById('saved-id-display').textContent=masked;
-  } else {
-    document.getElementById('setup-panel').style.display='block';
-    document.getElementById('ready-panel').style.display='none';
-    document.getElementById('redirect-uri-hint').textContent=REDIRECT_URI;
-  }
-}
-
-function saveClientId(){
-  const input=document.getElementById('client-id-input');
-  const val=input.value.trim().replace(/[^a-zA-Z0-9]/g,'');
-  const errEl=document.getElementById('setup-error');
-  if(val.length!==32){
-    errEl.classList.add('show');
-    input.style.borderColor='#f87171';
-    return;
-  }
-  errEl.classList.remove('show');
-  input.style.borderColor='';
-  localStorage.setItem(CLIENT_ID_KEY,val);
-  showLanding();
-}
-
-function clearClientId(){
-  localStorage.removeItem(CLIENT_ID_KEY);
-  localStorage.removeItem('sp_tk');
-  showLanding();
-}
-
-// Allow pressing Enter to save
-document.addEventListener('DOMContentLoaded',()=>{
-  const inp=document.getElementById('client-id-input');
-  if(inp) inp.addEventListener('keydown',e=>{if(e.key==='Enter')saveClientId()});
-});
-
-// ═══════════════════════════════════
 // AUTH
 // ═══════════════════════════════════
 async function startAuth(){
-  const cid=getClientId();
-  if(!cid){showLanding();return}
   const v=rstr(64);localStorage.setItem('pkce_v',v);
   const ch=b64url(await sha256(v));
-  const p=new URLSearchParams({client_id:cid,response_type:'code',redirect_uri:REDIRECT_URI,scope:SCOPES,code_challenge_method:'S256',code_challenge:ch});
+  const p=new URLSearchParams({client_id:CLIENT_ID,response_type:'code',redirect_uri:REDIRECT_URI,scope:SCOPES,code_challenge_method:'S256',code_challenge:ch});
   window.location.href=`https://accounts.spotify.com/authorize?${p}`;
 }
 async function exchangeCode(code){
-  const cid=getClientId();
-  if(!cid)throw new Error('No Client ID configured');
   const v=localStorage.getItem('pkce_v')||'';
-  const r=await fetch('https://accounts.spotify.com/api/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({client_id:cid,grant_type:'authorization_code',code,redirect_uri:REDIRECT_URI,code_verifier:v})});
-  if(!r.ok)throw new Error('Token exchange failed — revisá que el Redirect URI en tu app de Spotify sea exactamente: '+REDIRECT_URI);
+  const r=await fetch('https://accounts.spotify.com/api/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({client_id:CLIENT_ID,grant_type:'authorization_code',code,redirect_uri:REDIRECT_URI,code_verifier:v})});
+  if(!r.ok)throw new Error('Token exchange failed');
   const d=await r.json();localStorage.setItem('sp_tk',d.access_token);localStorage.removeItem('pkce_v');return d.access_token;
 }
 async function spGet(ep,tk){
@@ -886,16 +886,442 @@ async function buildTeam(genres){
 }
 
 // ═══════════════════════════════════
-// FLIP CARDS
+// DESTINY DESCRIPTION ENGINE
 // ═══════════════════════════════════
+
+// Opening lines — vary by medal type
+const DESTINY_OPENS={
+  fire:[
+    'El fuego que corre por tus venas musicales no miente —',
+    'Tu playlist arde con una intensidad que pocas personas pueden sostener —',
+    'Hay una llama en tu forma de escuchar música que no se apaga —',
+    'La energía que irradias a través de tu música es puro fuego —',
+  ],
+  water:[
+    'Tu música fluye como el océano — profunda, libre e imparable —',
+    'Hay una corriente emocional en tu playlist que arrastra todo a su paso —',
+    'Tu forma de escuchar música tiene la calma y la fuerza del agua —',
+    'Te movés entre géneros como el agua entre piedras — sin resistencia —',
+  ],
+  electric:[
+    'Tu playlist descarga voltaje puro en cada reproducción —',
+    'Hay electricidad en tu gusto musical que eriza la piel —',
+    'Tu música carga el ambiente como una tormenta que se avecina —',
+    'La energía eléctrica de tu playlist es imposible de ignorar —',
+  ],
+  psychic:[
+    'Tu universo musical revela una mente que piensa diferente —',
+    'Hay una profundidad psíquica en lo que escuchás que pocos comprenden —',
+    'Tu playlist es un espejo de una mente compleja y brillante —',
+    'Lo que escuchás habla de una sensibilidad fuera de lo común —',
+  ],
+  dark:[
+    'Las sombras de tu playlist revelan una autenticidad sin filtros —',
+    'Tu música vive en las capas más profundas de la experiencia humana —',
+    'Hay una honestidad oscura en tu gusto musical que es magnética —',
+    'Tu playlist no le teme a la oscuridad — la abraza —',
+  ],
+  dragon:[
+    'Tu gusto musical tiene la escala épica de las leyendas —',
+    'Hay algo legendario en la forma en que construís tu playlist —',
+    'Tu música suena como la banda sonora de batallas que merecen ser recordadas —',
+    'Lo que escuchás tiene el poder y la majestuosidad de los dragones —',
+  ],
+  fighting:[
+    'Tu música golpea directo al corazón, sin rodeos ni filtros —',
+    'Hay una determinación en tu playlist que no conoce la rendición —',
+    'Tu forma de escuchar música es intensa, directa y sin disculpas —',
+    'La fuerza de tu playlist viene de una autenticidad a prueba de todo —',
+  ],
+  fairy:[
+    'Tu universo musical brilla con una magia que encanta a todos —',
+    'Hay algo encantador e irresistible en lo que elegís escuchar —',
+    'Tu playlist tiene la ligereza y el poder mágico de lo extraordinario —',
+    'Lo que escuchás crea mundos propios — coloridos, únicos, inolvidables —',
+  ],
+  normal:[
+    'Tu gusto musical lo abarca todo — eso es una fortaleza real —',
+    'La versatilidad de tu playlist dice más de vos que cualquier género solo —',
+    'Sos de las personas que encuentran algo bueno en cada tipo de música —',
+    'Tu playlist no tiene límites — y eso la hace verdaderamente especial —',
+  ],
+  default:[
+    'Tu universo musical es único e imposible de categorizar del todo —',
+    'Hay algo en lo que escuchás que trasciende cualquier etiqueta —',
+    'Tu playlist es un mapa de quién sos — complejo, rico, auténtico —',
+    'La música que elegís revela una personalidad fuera de lo ordinario —',
+  ]
+};
+
+// Genre combo insights
+const GENRE_COMBOS={
+  'fire+fighting':'Reggaetón y rap en el mismo equipo — música que mueve el cuerpo y la mente al mismo tiempo.',
+  'electric+normal':'Electrónica y pop — el puente perfecto entre lo experimental y lo accesible.',
+  'psychic+water':'R&B y jazz — emociones profundas servidas con sofisticación.',
+  'dark+poison':'Trap e indie — la dualidad de quien disfruta tanto las sombras como la independencia.',
+  'rock+steel':'Rock y metal — una intensidad que no pide permiso para existir.',
+  'fairy+normal':'K-Pop y pop — la estética y la accesibilidad como filosofía de vida.',
+  'grass+ground':'Folk y reggae — raíces profundas, filosofía de vida auténtica.',
+  'dragon+psychic':'Clásica y neo soul — la elegancia como forma de resistencia.',
+  'flying+water':'Ambient y jazz — la búsqueda constante de espacios de calma.',
+  'ghost+dark':'Funk y trap — el groove como arma secreta.',
+};
+
+// Closing lines — vary by top song count and medal
+const DESTINY_CLOSES=[
+  'Este equipo no fue asignado al azar — fue convocado por cada canción que elegiste.',
+  'Los Pokémon no mienten: este equipo es el reflejo exacto de tu alma musical.',
+  'Cada Pokémon de tu equipo escuchó tu música antes de aparecer.',
+  'Tu equipo es único porque tu música es única — nadie más tendrá este mismo equipo.',
+  'El universo musical te vio venir y preparó exactamente estos seis guardianes.',
+  'Estos seis Pokémon vibran en la misma frecuencia que tus canciones favoritas.',
+  'No podrías tener otro equipo — este fue escrito por tus canciones desde el primer día.',
+  'Tu equipo es el resultado de todos los momentos en que la música te salvó el día.',
+];
+
+// Song-based flavor — uses actual track names
+function getSongFlavor(tracks, lang){
+  if(!tracks||!tracks.length) return '';
+  const picks=tracks.slice(0,3).map(t=>t.name);
+  const templates_es=[
+    `Canciones como "${picks[0]}"${picks[1]?' y "'+picks[1]+'"':''} marcaron el tono de este mes.`,
+    `Tu top incluye "${picks[0]}"${picks[2]?' y hasta "'+picks[2]+'"':''} — una mezcla que lo dice todo.`,
+    `De "${picks[0]}" a ${picks[1]?'"'+picks[1]+'"':'tus otros favoritos'}, cada reproducción sumó a este destino.`,
+  ];
+  const templates_en=[
+    `Songs like "${picks[0]}"${picks[1]?' and "'+picks[1]+'"':''} set the tone for this month.`,
+    `Your top includes "${picks[0]}"${picks[2]?' and even "'+picks[2]+'"':''} — a mix that says it all.`,
+    `From "${picks[0]}" to ${picks[1]?'"'+picks[1]+'"':'your other favorites'}, every play counted.`,
+  ];
+  const arr=lang==='en'?templates_en:templates_es;
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+
+function buildDestinyDesc(medal, genres, tracks, team, lang){
+  const medalType=medal?medal.types[0]:'default';
+  const opens=DESTINY_OPENS[medalType]||DESTINY_OPENS.default;
+  const open=opens[Math.floor(Math.random()*opens.length)];
+
+  // Try to find a genre combo insight
+  const topTypes=genres.slice(0,2).map(g=>g.type);
+  const comboKey=topTypes.join('+');
+  const comboKeyRev=topTypes.slice().reverse().join('+');
+  const comboInsight=GENRE_COMBOS[comboKey]||GENRE_COMBOS[comboKeyRev]||'';
+
+  // Genre mention — top 2 genres
+  let genreLine='';
+  if(genres.length>=2){
+    const g1=genres[0].label, g2=genres[1].label;
+    const genreTemplates_es=[
+      `Tu predominio de ${g1}${g2?' y '+g2:''} fue la clave para invocar a este equipo.`,
+      `${g1}${g2?' con toque de '+g2:''} — esa combinación no podía generar otro resultado.`,
+      `Las vibras de ${g1} con influencias de ${g2} hablaron directo al universo Pokémon.`,
+    ];
+    const genreTemplates_en=[
+      `Your dominance of ${g1}${g2?' and '+g2:''} was the key to summoning this team.`,
+      `${g1}${g2?' with a touch of '+g2:''} — that combination couldn't have created any other result.`,
+      `The vibes of ${g1} mixed with ${g2} spoke directly to the Pokémon universe.`,
+    ];
+    const arr=lang==='en'?genreTemplates_en:genreTemplates_es;
+    genreLine=arr[Math.floor(Math.random()*arr.length)];
+  }
+
+  const songFlavor=getSongFlavor(tracks, lang);
+  const close=DESTINY_CLOSES[Math.floor(Math.random()*DESTINY_CLOSES.length)];
+
+  // Assemble — pick 3 of the 4 parts randomly for variety
+  const parts=[genreLine, comboInsight, songFlavor].filter(Boolean);
+  const chosen=parts.sort(()=>Math.random()-.5).slice(0,2);
+
+  return `${open} ${chosen.join(' ')} ${close}`;
+}
+
+// ═══════════════════════════════════
+// POKEBALL ANIMATION + DESTINY CARD
+// ═══════════════════════════════════
+let _allFlipped=false;
+
+function checkAllFlipped(){
+  const all=document.querySelectorAll('.flip-inner');
+  if(!all.length) return;
+  const flippedCount=[...all].filter(el=>el.classList.contains('flipped')).length;
+  if(flippedCount===all.length && !_allFlipped){
+    _allFlipped=true;
+    setTimeout(()=>triggerPokeballAnimation(), 600);
+  }
+}
+
+function triggerPokeballAnimation(){
+  const overlay=document.getElementById('pokeball-anim-overlay');
+  const wrap=document.getElementById('pb-anim-wrap');
+  const txt=document.getElementById('pb-anim-text');
+
+  // Build pokeball HTML fresh each time (avoids CSS animation re-trigger issues)
+  wrap.innerHTML=`
+    <svg width="180" height="180" viewBox="0 0 180 180" id="pb-svg" style="filter:drop-shadow(0 0 30px rgba(255,255,255,.5))">
+      <g id="pb-top-g">
+        <path d="M10 90 A80 80 0 0 1 170 90 Z" fill="#cc2200"/>
+        <rect x="72" y="68" width="36" height="22" fill="#cc2200"/>
+        <circle cx="90" cy="90" r="20" fill="#cc2200" stroke="#fff" stroke-width="4"/>
+      </g>
+      <g id="pb-bot-g">
+        <path d="M10 90 A80 80 0 0 0 170 90 Z" fill="#e8e8e8"/>
+        <rect x="72" y="90" width="36" height="22" fill="#e8e8e8"/>
+        <circle cx="90" cy="90" r="20" fill="#e8e8e8" stroke="#fff" stroke-width="4"/>
+      </g>
+      <line x1="10" y1="90" x2="170" y2="90" stroke="#333" stroke-width="4"/>
+      <circle cx="90" cy="90" r="14" fill="#fff" stroke="#333" stroke-width="4"/>
+      <circle cx="90" cy="90" r="7" fill="#ddd"/>
+    </svg>`;
+
+  txt.textContent=t('destinyReveal');
+  txt.classList.remove('show');
+  overlay.classList.add('show');
+
+  const topG=document.getElementById('pb-top-g');
+  const botG=document.getElementById('pb-bot-g');
+  const pbSvg=document.getElementById('pb-svg');
+
+  // Phase 1 — shake (0-500ms)
+  let shakeCount=0;
+  const shake=setInterval(()=>{
+    shakeCount++;
+    pbSvg.style.transform=shakeCount%2?'rotate(-8deg) scale(1.05)':'rotate(8deg) scale(1.05)';
+    if(shakeCount>=6){
+      clearInterval(shake);
+      pbSvg.style.transform='rotate(0) scale(1)';
+      // Phase 2 — open (500-1500ms)
+      setTimeout(()=>openBall(topG,botG,pbSvg,txt,overlay),100);
+    }
+  },80);
+}
+
+function openBall(topG,botG,pbSvg,txt,overlay){
+  // Flash white
+  overlay.style.background='rgba(255,255,255,.7)';
+  setTimeout(()=>overlay.style.background='rgba(0,0,0,.92)',200);
+
+  // Animate halves apart
+  let frame=0;
+  const anim=setInterval(()=>{
+    frame++;
+    const progress=frame/30;
+    const ease=1-Math.pow(1-progress,3);
+    topG.style.transform=`translateY(${-80*ease}px)`;
+    botG.style.transform=`translateY(${80*ease}px)`;
+    pbSvg.style.opacity=1-(progress*.8);
+    if(frame>=30){
+      clearInterval(anim);
+      pbSvg.style.opacity=0;
+      // Show text
+      txt.classList.add('show');
+      // Wait then close
+      setTimeout(()=>{
+        overlay.classList.remove('show');
+        topG.style.transform='';
+        botG.style.transform='';
+        pbSvg.style.opacity=1;
+        overlay.style.background='rgba(0,0,0,.92)';
+        setTimeout(()=>showDestinyCard(),400);
+      },1800);
+    }
+  },16);
+}
+
+function showDestinyCard(){
+  if(!_medal||!_genres||!_team) return;
+
+  // Tab labels i18n
+  document.getElementById('dct-team-lbl').textContent=_lang==='es'?'Equipo':'Team';
+  document.getElementById('dct-why-lbl').textContent=_lang==='es'?'Por qué':'Why';
+  document.getElementById('dct-dest-lbl').textContent=_lang==='es'?'Destino':'Destiny';
+  document.getElementById('dc-why-title').textContent=_lang==='es'?'¿Por qué este equipo?':'Why this team?';
+  document.getElementById('dc-destiny-title').textContent=t('destinyTitle');
+  document.getElementById('btn-dc-close').textContent=t('destinyBtn');
+
+  // Panel: Equipo
+  document.getElementById('dc-medal-emoji').textContent=_medal.emoji;
+  document.getElementById('dc-medal-name').textContent=medalName(_medal);
+  document.getElementById('dc-pokemon-row').innerHTML=_team.map(p=>`<img class="dc-poke-mini" src="${p.sprite}" alt="${p.name}">`).join('');
+  document.getElementById('dc-genres').innerHTML=_genres.slice(0,5).map(g=>{
+    const c=TC[g.type]||'#888';
+    return`<span class="dc-genre-tag" style="background:${c}">${g.label}</span>`;
+  }).join('');
+
+  // Panel: Por qué — top songs list
+  const songItems=(_topTracks||[]).slice(0,10).map((tr,i)=>{
+    const artist=tr.artists&&tr.artists[0]?tr.artists[0].name:'';
+    return`<div class="dc-song-item"><div class="dc-song-num">${i+1}</div><div class="dc-song-info"><div class="dc-song-name">${tr.name}</div><div class="dc-song-artist">${artist}</div></div></div>`;
+  }).join('');
+  document.getElementById('dc-songs-list').innerHTML=songItems;
+
+  // Why desc — genre-based explanation
+  const g1=_genres[0]?.label||'', g2=_genres[1]?.label||'';
+  const whyTemplates_es=[
+    `Tu top de este mes estuvo dominado por ${g1}${g2?' y '+g2:''}. Esos géneros se traducen directamente en tipos Pokémon — cada canción que escuchaste fue un voto para invocar a tu equipo.`,
+    `Las ${(_topTracks||[]).length} canciones que más sonaron en tu historial hablan de una vibra ${g1}${g2?' con toques de '+g2:''}. El universo Pokémon lo leyó y armó este equipo exactamente para esa energía.`,
+    `Tu oído tiene preferencia clara por ${g1}${g2?' seguido de '+g2:''}. Eso no es casualidad — es la firma musical que convocó a cada uno de estos seis Pokémon.`,
+  ];
+  const whyTemplates_en=[
+    `Your top this month was dominated by ${g1}${g2?' and '+g2:''}. Those genres translate directly into Pokémon types — every song you played was a vote to summon your team.`,
+    `The ${(_topTracks||[]).length} songs that played most in your history speak to a ${g1}${g2?' with touches of '+g2:''} vibe. The Pokémon universe read that and built this team exactly for that energy.`,
+    `Your ear clearly prefers ${g1}${g2?' followed by '+g2:''}. That's no coincidence — it's the musical signature that summoned each of these six Pokémon.`,
+  ];
+  const whyArr=_lang==='es'?whyTemplates_es:whyTemplates_en;
+  document.getElementById('dc-why-desc').textContent=whyArr[Math.floor(Math.random()*whyArr.length)];
+
+  // Panel: Destino
+  const desc=buildDestinyDesc(_medal,_genres,_topTracks,_team,_lang);
+  document.getElementById('dc-desc').textContent=desc;
+
+  // Reset to first tab and show
+  switchDcTab('team');
+  const overlay=document.getElementById('destiny-card-overlay');
+  overlay.classList.add('show');
+  const cx=window.innerWidth/2, cy=window.innerHeight/2;
+  sparkle(cx,cy);
+}
+
+function switchDcTab(tab){
+  const tabs={team:'dct-team',why:'dct-why',destiny:'dct-destiny'};
+  Object.keys(tabs).forEach(k=>{
+    document.getElementById(tabs[k]).classList.toggle('active',k===tab);
+    document.getElementById(`dc-panel-${k}`).style.display=k===tab?'block':'none';
+  });
+}
+
+function closeDestinyCard(){
+  document.getElementById('destiny-card-overlay').classList.remove('show');
+  _allFlipped=false;
+}
+
+async function exportDestinyCard(){
+  const btn=document.querySelector('.btn-dc-share.dl');
+  const btnTxt=document.getElementById('dc-btn-save');
+  const orig=btnTxt.textContent;
+  btnTxt.textContent=_lang==='es'?'Generando...':'Generating...';
+  btn.style.opacity='.6';
+  btn.style.pointerEvents='none';
+
+  try{
+    const blob=await renderDestinyCardToBlob();
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download='mi-destino-pokebeats.png';
+    a.click();
+    setTimeout(()=>URL.revokeObjectURL(url),5000);
+  }catch(e){
+    alert(_lang==='es'?'Error al generar imagen':'Error generating image');
+  }finally{
+    btnTxt.textContent=orig;
+    btn.style.opacity='1';
+    btn.style.pointerEvents='auto';
+  }
+}
+
+async function shareDestinyApp(platform){
+  const desc=document.getElementById('dc-desc').textContent;
+  const medal=_medal?`${_medal.emoji} ${medalName(_medal)}`:'';
+  const text=`${medal}\n\n${desc}\n\n#PokéBeats ⚡`;
+  const urls={
+    whatsapp:`https://wa.me/?text=${encodeURIComponent(text)}`,
+    twitter:`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`
+  };
+  // Try to share image first on mobile
+  if(platform==='whatsapp'||platform==='twitter'){
+    if(navigator.share&&platform==='whatsapp'){
+      try{
+        const blob=await renderDestinyCardToBlob();
+        const file=new File([blob],'destino-pokebeats.png',{type:'image/png'});
+        if(navigator.canShare&&navigator.canShare({files:[file]})){
+          await navigator.share({title:'PokéBeats — Mi destino musical',text,files:[file]});
+          return;
+        }
+      }catch(e){}
+    }
+    window.open(urls[platform],'_blank');
+  }
+}
+
+async function renderDestinyCardToBlob(){
+  const isDark=_imgTheme==='dark';
+  const bg=isDark?'linear-gradient(145deg,#0f1923,#0a1628,#12082a)':'linear-gradient(145deg,#f0f4f8,#ffffff,#e8f0fe)';
+  const bgFlat=isDark?'#0a1628':'#f0f4f8';
+  const border=isDark?'rgba(255,215,0,.4)':'rgba(255,215,0,.6)';
+  const textMain=isDark?'rgba(255,255,255,.85)':'#1a202c';
+  const textSub=isDark?'rgba(255,255,255,.5)':'rgba(0,0,0,.5)';
+  const rowBg=isDark?'rgba(255,255,255,.04)':'rgba(0,0,0,.05)';
+  const starCol=isDark?'rgba(255,215,0,.8)':'rgba(200,160,0,.9)';
+
+  const medal=_medal?_medal.emoji:'🏅';
+  const medalN=_medal?medalName(_medal):'';
+  const desc=document.getElementById('dc-desc').textContent;
+  const whyDesc=document.getElementById('dc-why-desc').textContent;
+
+  const genreTagsHtml=(_genres||[]).slice(0,5).map(g=>{
+    const c=TC[g.type]||'#888';
+    return`<span style="display:inline-block;background:${c};color:#fff;font-size:15px;font-weight:800;padding:5px 14px;border-radius:20px;margin:3px">${g.label}</span>`;
+  }).join('');
+
+  const pokesHtml=(_team||[]).map(p=>`<img src="${p.sprite}" style="width:68px;height:68px;object-fit:contain" crossorigin="anonymous">`).join('');
+
+  const songRowsHtml=(_topTracks||[]).slice(0,10).map((tr,i)=>{
+    const artist=tr.artists&&tr.artists[0]?tr.artists[0].name:'';
+    return`<div style="display:flex;align-items:center;gap:10px;padding:7px 12px;border-radius:8px;background:${rowBg};margin-bottom:4px">
+      <div style="font-size:11px;font-weight:800;color:${starCol};min-width:18px">${i+1}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:800;color:${textMain};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${tr.name}</div>
+        <div style="font-size:10px;color:${textSub}">${artist}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const divider=`<div style="width:50px;height:2px;background:linear-gradient(90deg,transparent,rgba(255,215,0,.5),transparent);margin:0 auto 24px"></div>`;
+  const sectionTitle=(txt)=>`<div style="font-size:12px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:rgba(255,215,0,.6);margin-bottom:16px">${txt}</div>`;
+
+  const render=document.createElement('div');
+  render.style.cssText=`position:fixed;left:-9999px;top:0;width:600px;background:${bg};border-radius:24px;padding:48px 40px;font-family:Nunito,sans-serif;text-align:center;border:2px solid ${border}`;
+  document.body.appendChild(render);
+
+  render.innerHTML=`
+    <div style="font-size:28px;letter-spacing:6px;margin-bottom:16px;color:${starCol}">✦ ✦ ✦</div>
+    ${sectionTitle(_lang==='es'?'TU EQUIPO':'YOUR TEAM')}
+    <div style="font-size:72px;margin-bottom:8px;filter:drop-shadow(0 0 20px rgba(255,215,0,.6))">${medal}</div>
+    <div style="font-size:24px;font-weight:900;background:linear-gradient(135deg,#FFD700,${isDark?'#fff':'#a06000'});-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:20px">${medalN}</div>
+    <div style="display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-bottom:16px">${pokesHtml}</div>
+    <div style="margin-bottom:24px">${genreTagsHtml}</div>
+
+    ${divider}
+    ${sectionTitle(_lang==='es'?'¿POR QUÉ ESTE EQUIPO?':'WHY THIS TEAM?')}
+    <div style="font-size:15px;color:${textSub};line-height:1.8;font-style:italic;margin-bottom:16px">${whyDesc}</div>
+    <div style="width:100%;margin-bottom:8px;text-align:left">${songRowsHtml}</div>
+
+    ${divider}
+    ${sectionTitle(_lang==='es'?'TU DESTINO MUSICAL':'YOUR MUSICAL DESTINY')}
+    <div style="font-size:15px;color:${textMain};line-height:1.9;font-style:italic;margin-bottom:24px">${desc}</div>
+
+    <div style="font-size:18px;font-weight:900;color:#1DB954;letter-spacing:3px">#PokéBeats</div>`;
+
+  await Promise.all([...render.querySelectorAll('img')].map(img=>
+    new Promise(r=>{if(img.complete)r();else{img.onload=r;img.onerror=r}})
+  ));
+
+  const canvas=await html2canvas(render,{backgroundColor:bgFlat,scale:2,useCORS:true,logging:false,width:600});
+  document.body.removeChild(render);
+  return new Promise(r=>canvas.toBlob(b=>r(b),'image/png'));
+}
 function flipCard(wrap){
   const inner=wrap.querySelector('.flip-inner');
   if(inner.classList.contains('flipped'))return;
   inner.classList.add('flipped');
   const rect=wrap.getBoundingClientRect();
   sparkle(rect.left+rect.width/2,rect.top+rect.height/2);
+  checkAllFlipped();
 }
-function revealAll(){document.querySelectorAll('.flip-wrap').forEach((w,i)=>setTimeout(()=>flipCard(w),i*130))}
+function revealAll(){
+  document.querySelectorAll('.flip-wrap').forEach((w,i)=>setTimeout(()=>flipCard(w),i*130));
+}
 
 // ═══════════════════════════════════
 // BATTLE MODE
@@ -1015,7 +1441,7 @@ function buildSongsCardHtml(){
 
 async function renderCardToBlob(html){
   const card=document.getElementById('share-card-render');
-  const isDark=_theme==='dark';
+  const isDark=_imgTheme==='dark';
   card.className=isDark?'sc-dark':'sc-light';
   card.innerHTML=html;
   await Promise.all([...card.querySelectorAll('img')].map(img=>new Promise(r=>{if(img.complete)r();else{img.onload=r;img.onerror=r}})));
@@ -1024,11 +1450,25 @@ async function renderCardToBlob(html){
   return{blob:await new Promise(r=>canvas.toBlob(b=>r(b),'image/png')),dataUrl:canvas.toDataURL()};
 }
 
+function setImgTheme(theme){
+  _imgTheme=theme;
+  _blobTeam=null;_blobSongs=null;_blobDestiny=null;
+  document.getElementById('img-theme-dark').classList.toggle('active',theme==='dark');
+  document.getElementById('img-theme-light').classList.toggle('active',theme==='light');
+  renderTab(_activeTab);
+}
+
 async function openShareModal(){
+  _imgTheme=_theme; // sync with current app theme
+  document.getElementById('img-theme-dark').classList.toggle('active',_theme==='dark');
+  document.getElementById('img-theme-light').classList.toggle('active',_theme==='light');
+  // destiny tab only available after all cards flipped
+  document.getElementById('tab-destiny').style.display=_allFlipped===false&&getHistory().length>0||_medal?'':'none';
   document.getElementById('share-modal-bg').classList.add('open');
   _activeTab='team';
   document.getElementById('tab-team').classList.add('active');
   document.getElementById('tab-songs').classList.remove('active');
+  document.getElementById('tab-destiny').classList.remove('active');
   await renderTab('team');
 }
 
@@ -1037,6 +1477,7 @@ async function switchTab(tab){
   _activeTab=tab;
   document.getElementById('tab-team').classList.toggle('active',tab==='team');
   document.getElementById('tab-songs').classList.toggle('active',tab==='songs');
+  document.getElementById('tab-destiny').classList.toggle('active',tab==='destiny');
   await renderTab(tab);
 }
 
@@ -1047,35 +1488,52 @@ async function renderTab(tab){
     if(tab==='team'){
       if(!_blobTeam){const r=await renderCardToBlob(buildTeamCardHtml());_blobTeam=r}
       preview.innerHTML=`<img src="${_blobTeam.dataUrl}" style="width:100%;border-radius:10px;aspect-ratio:9/16;object-fit:cover">`;
-    }else{
+    }else if(tab==='songs'){
       if(!_blobSongs){const r=await renderCardToBlob(buildSongsCardHtml());_blobSongs=r}
       preview.innerHTML=`<img src="${_blobSongs.dataUrl}" style="width:100%;border-radius:10px;aspect-ratio:9/16;object-fit:cover">`;
+    }else if(tab==='destiny'){
+      if(!_blobDestiny){const b=await renderDestinyCardToBlob();_blobDestiny={blob:b,dataUrl:await blobToDataUrl(b)}}
+      preview.innerHTML=`<img src="${_blobDestiny.dataUrl}" style="width:100%;border-radius:10px;object-fit:contain">`;
     }
   }catch(e){preview.innerHTML='<div style="padding:16px;color:var(--text2);text-align:center;font-size:12px">Vista previa no disponible</div>'}
+}
+
+function blobToDataUrl(blob){
+  return new Promise(r=>{const fr=new FileReader();fr.onload=e=>r(e.target.result);fr.readAsDataURL(blob)});
+}
+
+async function downloadCurrentImage(){
+  let blob=null,fname='';
+  if(_activeTab==='team'){blob=_blobTeam?.blob;fname='mi-equipo-pokebeats.png';}
+  else if(_activeTab==='songs'){blob=_blobSongs?.blob;fname='mis-canciones-pokebeats.png';}
+  else if(_activeTab==='destiny'){blob=_blobDestiny?.blob;fname='mi-destino-pokebeats.png';}
+  if(!blob)return;
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=fname;a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),5000);
 }
 
 function closeShareModal(e){if(!e||e.target===document.getElementById('share-modal-bg'))document.getElementById('share-modal-bg').classList.remove('open')}
 
 async function shareToApp(platform){
-  const text=`🎵 ${_lang==='es'?'Mi equipo PokéBeats este mes':'My PokéBeats team this month'}:\n${_team.map((p,i)=>`${i+1}. ${cap(p.name)} (${p.matchedGenre})`).join('\n')}\n\n#PokéBeats ⚡`;
+  let text='';
+  if(_activeTab==='destiny'){
+    const desc=document.getElementById('dc-desc')?.textContent||'';
+    const medal=_medal?`${_medal.emoji} ${medalName(_medal)}`:'';
+    text=`${medal}\n\n${desc}\n\n#PokéBeats ⚡`;
+  }else{
+    text=`🎵 ${_lang==='es'?'Mi equipo PokéBeats este mes':'My PokéBeats team this month'}:\n${_team.map((p,i)=>`${i+1}. ${cap(p.name)} (${p.matchedGenre})`).join('\n')}\n\n#PokéBeats ⚡`;
+  }
   if(platform==='instagram'){await downloadCurrentImage();await navigator.clipboard?.writeText(text).catch(()=>{});alert(_lang==='es'?'📸 Imagen guardada + texto copiado.':'📸 Image saved + text copied.');return}
   const urls={whatsapp:`https://wa.me/?text=${encodeURIComponent(text)}`,twitter:`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`};
   if(urls[platform])window.open(urls[platform],'_blank');
-}
-
-async function downloadCurrentImage(){
-  const blob=_activeTab==='team'?_blobTeam?.blob:_blobSongs?.blob;
-  if(!blob)return;
-  const fname=_activeTab==='team'?'mi-equipo-pokebeats.png':'mis-canciones-pokebeats.png';
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');a.href=url;a.download=fname;a.click();
-  setTimeout(()=>URL.revokeObjectURL(url),5000);
 }
 
 // ═══════════════════════════════════
 // RENDER RESULTS
 // ═══════════════════════════════════
 function renderResults(){
+  _allFlipped=false;
   const c=document.getElementById('results-inner');
   const badges=_genres.slice(0,4).map(g=>{const col=TC[g.type]||'#888';return`<span class="badge" style="color:${col};background:${col}22;border-color:${col}55">${g.label}</span>`}).join('');
 
@@ -1156,14 +1614,14 @@ function renderResults(){
 // REGEN
 // ═══════════════════════════════════
 async function regenTeam(){
-  const tk=localStorage.getItem('sp_tk');if(!tk){showLanding();return}
+  const tk=localStorage.getItem('sp_tk');if(!tk){showScreen('landing');return}
   showScreen('loading');
   document.getElementById('loading-msg').textContent=_lang==='es'?'Generando nuevo equipo...':'Generating new team...';
-  try{_team=await buildTeam(_genres);_blobTeam=null;_blobSongs=null;saveToHistory();renderResults()}
+  try{_team=await buildTeam(_genres);_blobTeam=null;_blobSongs=null;_blobDestiny=null;saveToHistory();renderResults()}
   catch(e){document.getElementById('error-msg').textContent=e.message;showScreen('error')}
 }
 
-function reset(){localStorage.removeItem('sp_tk');showLanding()}
+function reset(){localStorage.removeItem('sp_tk');showScreen('landing')}
 
 // ═══════════════════════════════════
 // MAIN
@@ -1174,18 +1632,15 @@ async function main(){
   const p=new URLSearchParams(window.location.search);
   const code=p.get('code'),err=p.get('error');
   if(code||err)window.history.replaceState({},'',window.location.pathname);
-  if(err){document.getElementById('error-msg').textContent=_lang==='es'?'Autenticación cancelada.':'Authentication cancelled.';document.getElementById('error-hint').textContent='';showScreen('error');return}
-
-  // If no Client ID yet, go straight to setup
-  if(!getClientId()){showLanding();return}
+  if(err){document.getElementById('error-msg').textContent=_lang==='es'?'Autenticación cancelada.':'Authentication cancelled.';showScreen('error');return}
 
   let tk=localStorage.getItem('sp_tk');
   if(code&&!tk){
     showScreen('loading');
     document.getElementById('loading-msg').textContent=_lang==='es'?'Conectando con Spotify...':'Connecting to Spotify...';
-    try{tk=await exchangeCode(code)}catch(e){document.getElementById('error-msg').textContent=e.message;document.getElementById('error-hint').textContent='';showScreen('error');return}
+    try{tk=await exchangeCode(code)}catch(e){document.getElementById('error-msg').textContent='Error: '+e.message;showScreen('error');return}
   }
-  if(!tk){showLanding();return}
+  if(!tk){showScreen('landing');return}
 
   showScreen('loading');
   try{
@@ -1214,14 +1669,14 @@ async function main(){
 
     showMedalScreen(getMedal(genres));
   }catch(e){
-    if(e.message.includes('Token expired')){localStorage.removeItem('sp_tk');showLanding();}
+    if(e.message.includes('Token expired'))showScreen('landing');
     else{
       document.getElementById('error-msg').textContent=e.message;
       const hint=document.getElementById('error-hint');
-      if(e.message.includes('autorizada')||e.message.includes('authorized')||e.message.includes('Redirect')){
-        hint.innerHTML=_lang==='es'
-          ?'💡 Verificá que el <strong>Redirect URI</strong> en tu app de Spotify sea exactamente: <code style="font-size:10px;word-break:break-all">'+REDIRECT_URI+'</code>'
-          :'💡 Make sure the <strong>Redirect URI</strong> in your Spotify app is exactly: <code style="font-size:10px;word-break:break-all">'+REDIRECT_URI+'</code>';
+      if(e.message.includes('autorizada')||e.message.includes('authorized')){
+        hint.textContent=_lang==='es'
+          ?'💡 Esta app está en modo desarrollo. El creador debe agregar tu correo de Spotify en el Dashboard para que funcione.'
+          :'💡 This app is in development mode. The creator must add your Spotify email in the Dashboard for it to work.';
       } else {
         hint.textContent='';
       }
