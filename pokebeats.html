@@ -129,8 +129,8 @@ body::after{content:'';position:fixed;bottom:-200px;right:-200px;width:600px;hei
 .pokeball-anim-overlay{position:fixed;inset:0;z-index:5000;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.92);pointer-events:none}
 .pokeball-anim-overlay.show{display:flex;pointer-events:all}
 .pb-anim-wrap{position:relative;width:180px;height:180px}
-.pb-top{position:absolute;top:0;left:0;width:180px;height:90px;overflow:hidden;transform:translateY(0);transition:transform 1.2s cubic-bezier(.4,0,.2,1)}
-.pb-bottom{position:absolute;bottom:0;left:0;width:180px;height:90px;overflow:hidden;transform:translateY(0);transition:transform 1.2s cubic-bezier(.4,0,.2,1)}
+.pb-top{position:absolute;top:0;left:0;width:100%;height:50%;overflow:hidden;transform:translateY(0);transition:transform 1.2s cubic-bezier(.4,0,.2,1)}
+.pb-bottom{position:absolute;bottom:0;left:0;width:100%;height:50%;overflow:hidden;transform:translateY(0);transition:transform 1.2s cubic-bezier(.4,0,.2,1)}
 .pb-anim-overlay.opening .pb-top{transform:translateY(-90px)}
 .pb-anim-overlay.opening .pb-bottom{transform:translateY(90px)}
 .pb-flash{position:absolute;inset:-20px;background:radial-gradient(circle,rgba(255,255,255,.9) 0%,rgba(255,255,255,0) 70%);opacity:0;border-radius:50%;pointer-events:none;transition:opacity .3s}
@@ -338,7 +338,173 @@ body::after{content:'';position:fixed;bottom:-200px;right:-200px;width:600px;hei
 .sc-attr{font-size:24px}
 .sc-dark .sc-attr{color:rgba(255,255,255,.2)}
 .sc-light .sc-attr{color:rgba(0,0,0,.25)}
-</style>
+/* ═══════════════════════════════════
+   RESPONSIVE — Mobile First
+   ═══════════════════════════════════ */
+
+/* ── Base small phones (< 360px) ── */
+@media(max-width:359px){
+  .topbar{padding:8px 10px;gap:4px}
+  .topbar-btn{font-size:12px;padding:5px 8px}
+  .pokeball-wrap{width:72px;height:72px}
+  .title{font-size:28px}
+  .tagline{font-size:13px}
+  .desc{font-size:12px;margin-bottom:24px}
+  .btn-spotify{font-size:14px;padding:13px 20px}
+  .card-scene{width:160px;height:224px}
+  .medal-emoji-big{font-size:52px}
+  .modal-box{padding:14px}
+  .modal-tabs{gap:4px}
+  .modal-tab{font-size:10px;padding:7px 4px}
+  .destiny-card{padding:18px 14px}
+  .dc-tabs{gap:4px}
+  .dc-tab{font-size:10px;padding:6px 2px}
+  .btn-dc-close{font-size:11px;padding:9px 16px}
+  .share-buttons{grid-template-columns:1fr 1fr;gap:6px}
+  .share-btn{font-size:10px;padding:8px 6px}
+  .battle-title{font-size:18px}
+  .btn-fight{font-size:13px;padding:11px 20px}
+  .btn-gold{font-size:13px;padding:10px 20px}
+  .btn-share-main,.btn-regen,.btn-battle-open{font-size:12px;padding:10px 18px}
+  .kofi-section{padding:14px}
+  .actions{gap:8px}
+  .res-title{font-size:13px}
+}
+
+/* ── Standard phones (360px – 479px) ── */
+@media(max-width:479px){
+  #landing{padding:56px 20px 32px}
+  .pokeball-wrap{width:80px;height:80px;margin-bottom:20px}
+  .tagline{font-size:14px;max-width:280px}
+  .desc{font-size:13px;max-width:280px;margin-bottom:28px}
+  .btn-spotify{font-size:15px;padding:14px 24px}
+  #results{padding:56px 12px 40px}
+  .results-inner{width:100%}
+  .team-grid{gap:8px}
+  .dna-section,.history-section,.kofi-section{padding:14px;border-radius:14px}
+  .history-sprites img{width:28px;height:28px}
+  .card-scene{width:175px;height:245px}
+  .btn-gold{font-size:14px;padding:12px 24px}
+  .modal-bg{padding:10px}
+  .modal-box{padding:16px;border-radius:16px}
+  .modal-tabs{gap:5px}
+  .modal-tab{font-size:11px;padding:8px 5px}
+  .destiny-card{padding:20px 16px;max-width:100%}
+  .dc-medal-name{font-size:14px}
+  .share-buttons{gap:6px}
+  #battle-screen{padding:56px 12px 40px}
+  .battle-title{font-size:19px}
+  .battle-arena{gap:10px}
+  .battle-bar-label{width:52px;font-size:9px}
+  .actions{gap:8px}
+  .btn-share-main{font-size:13px;padding:12px 22px}
+  .btn-regen,.btn-battle-open{font-size:12px;padding:9px 18px}
+  .img-theme-toggle{gap:1px}
+  .img-theme-opt{padding:5px 10px;font-size:11px}
+}
+
+/* ── Large phones / small tablets (480px – 599px) ── */
+@media(min-width:480px) and (max-width:599px){
+  #results{padding:60px 16px 44px}
+  .results-inner{max-width:460px}
+  .dna-section,.history-section{padding:16px}
+  .modal-box{max-width:420px}
+  .destiny-card{max-width:420px}
+}
+
+/* ── Tablets portrait (600px – 767px) ── */
+@media(min-width:600px) and (max-width:767px){
+  .results-inner{max-width:560px}
+  .team-grid{gap:12px}
+  .modal-box{max-width:460px}
+  .destiny-card{max-width:460px}
+  #battle-screen .battle-arena{max-width:560px}
+}
+
+/* ── Tablets landscape / small desktop (768px+) ── */
+@media(min-width:768px){
+  .results-inner{max-width:600px}
+  .team-grid{gap:14px}
+  #landing{padding:80px 40px 60px}
+  .pokeball-wrap{width:120px;height:120px;margin-bottom:36px}
+  .tagline{font-size:18px;max-width:420px}
+  .desc{font-size:16px;max-width:400px}
+  .btn-spotify{font-size:19px;padding:18px 40px}
+  .btn-spotify svg{width:26px;height:26px}
+  .card-scene{width:220px;height:308px}
+  .medal-emoji-big{font-size:80px}
+  .medal-name-big{font-size:18px}
+  .modal-box{max-width:480px;padding:28px}
+  .modal-tabs{gap:10px}
+  .modal-tab{font-size:14px;padding:11px}
+  .share-buttons{gap:10px}
+  .share-btn{font-size:14px;padding:12px}
+  .destiny-card{max-width:500px;padding:36px 32px}
+  .dc-tab{font-size:13px;padding:9px 8px}
+  .dc-desc,.dc-why-desc{font-size:15px}
+  .btn-dc-close{font-size:14px;padding:13px 28px}
+  #battle-screen{padding:80px 24px 60px}
+  .battle-title{font-size:26px}
+  .battle-arena{max-width:600px;gap:16px}
+  .battle-poke img{width:60px;height:60px}
+  .btn-fight{font-size:17px;padding:15px 36px}
+  .btn-gold{font-size:17px;padding:15px 36px}
+  .btn-share-main{font-size:16px;padding:15px 32px}
+  .btn-regen,.btn-battle-open{font-size:14px;padding:12px 26px}
+  .kofi-section{padding:28px}
+  .kofi-emoji{font-size:40px}
+  .dna-section,.history-section{padding:20px;border-radius:20px}
+  .dna-title{font-size:18px}
+  .song-name{font-size:14px}
+  .song-artist{font-size:12px}
+  .history-sprites img{width:38px;height:38px}
+  .topbar-btn{font-size:15px;padding:7px 14px}
+  .topbar{padding:14px 20px;gap:10px}
+  #loading-msg{font-size:20px}
+  #loading-sub{font-size:16px}
+  .medal-intro{font-size:17px;max-width:340px}
+  .res-title{font-size:17px}
+}
+
+/* ── Desktop (1024px+) ── */
+@media(min-width:1024px){
+  .results-inner{max-width:660px}
+  .modal-box{max-width:520px}
+  .destiny-card{max-width:540px}
+  .team-grid{grid-template-columns:repeat(3,1fr);gap:16px}
+  #battle-screen .battle-arena{max-width:680px}
+}
+
+/* ── Destiny card overlay scroll on small heights ── */
+@media(max-height:700px){
+  .destiny-card-overlay{align-items:flex-start;padding:12px;overflow-y:auto}
+  .destiny-card{margin:auto;max-height:none}
+  .dc-songs-list{max-height:180px;overflow-y:auto}
+}
+@media(max-height:500px){
+  .destiny-card-overlay{padding:8px}
+  .destiny-card{padding:14px 12px}
+  .dc-stars{display:none}
+  .dc-divider{margin:10px auto}
+  .dc-medal{font-size:32px;margin-bottom:4px}
+}
+
+/* ── Pokeball animation responsive ── */
+@media(max-width:479px){
+  .pb-anim-wrap{width:140px;height:140px}
+}
+@media(min-width:768px){
+  .pb-anim-wrap{width:220px;height:220px}
+}
+
+/* ── Modal on very small screens ── */
+@media(max-width:359px){
+  .modal-bg{padding:6px}
+  .modal-box{border-radius:14px;padding:12px}
+  .share-buttons{grid-template-columns:1fr 1fr}
+  .img-theme-opt{padding:4px 8px;font-size:10px}
+}
+
 </head>
 <body>
 
@@ -1058,7 +1224,7 @@ function triggerPokeballAnimation(){
 
   // Build pokeball HTML fresh each time (avoids CSS animation re-trigger issues)
   wrap.innerHTML=`
-    <svg width="180" height="180" viewBox="0 0 180 180" id="pb-svg" style="filter:drop-shadow(0 0 30px rgba(255,255,255,.5))">
+    <svg width="100%" height="100%" viewBox="0 0 180 180" id="pb-svg" style="filter:drop-shadow(0 0 30px rgba(255,255,255,.5))">
       <g id="pb-top-g">
         <path d="M10 90 A80 80 0 0 1 170 90 Z" fill="#cc2200"/>
         <rect x="72" y="68" width="36" height="22" fill="#cc2200"/>
